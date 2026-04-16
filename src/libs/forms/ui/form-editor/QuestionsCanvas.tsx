@@ -89,13 +89,10 @@ export function QuestionsCanvas({
         {showAddMenu && (
           <>
             <div
-              className='fixed inset-0 z-10'
+              className='fixed inset-0 z-10 bg-black/20 backdrop-blur-[1px]'
               onClick={() => setShowAddMenu(false)}
             />
-            <div
-              className='absolute top-full left-1/2 z-20 mt-2 -translate-x-1/2'
-              style={{ width: 600 }}
-            >
+            <div className='fixed left-1/2 top-1/2 z-20 -translate-x-1/2 -translate-y-1/2'>
               <QuestionTypeMenu
                 onSelect={(type) => {
                   onAddQuestion(type);

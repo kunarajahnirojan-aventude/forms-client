@@ -137,36 +137,41 @@ interface QuestionTypeMenuProps {
 
 export function QuestionTypeMenu({ onSelect }: QuestionTypeMenuProps) {
   return (
-    <div className='w-[600px] rounded-2xl border border-slate-200 bg-white shadow-2xl shadow-slate-200/80'>
-      <div className='border-b border-slate-100 px-5 py-3'>
-        <p className='text-xs font-semibold uppercase tracking-wider text-slate-400'>
-          Add question
-        </p>
+    <div className='w-[640px] overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl shadow-black/10'>
+      {/* Header */}
+      <div className='flex items-center justify-between border-b border-slate-100 bg-slate-50/70 px-5 py-3.5'>
+        <p className='text-sm font-semibold text-slate-700'>Add a question</p>
+        <p className='text-xs text-slate-400'>Click any type to insert</p>
       </div>
 
-      <div className='p-4 space-y-4'>
+      <div className='p-5 space-y-5'>
         {QUESTION_TYPES.map(({ category, items }) => (
           <div key={category}>
-            <p className='mb-2 px-1 text-[11px] font-semibold uppercase tracking-widest text-slate-400'>
+            <p className='mb-2.5 text-[11px] font-bold uppercase tracking-widest text-slate-400'>
               {category}
             </p>
-            <div className='grid grid-cols-4 gap-1.5'>
+            <div className='grid grid-cols-4 gap-2'>
               {items.map((item) => (
                 <button
                   key={item.type}
                   onClick={() => onSelect(item.type)}
-                  className='group flex flex-col items-center gap-2 rounded-xl border border-transparent px-2 py-3 text-center transition-all hover:border-slate-200 hover:bg-slate-50'
+                  className='group flex flex-col items-center gap-2.5 rounded-xl border border-slate-100 bg-slate-50/60 px-3 py-3.5 text-center transition-all hover:border-[#0B1AA0]/25 hover:bg-[#0B1AA0]/5 hover:shadow-sm'
                 >
                   <span
                     className={cn(
-                      'flex h-10 w-10 items-center justify-center rounded-xl transition-transform group-hover:scale-105',
+                      'flex h-10 w-10 items-center justify-center rounded-xl transition-transform group-hover:scale-110',
                       item.color,
                     )}
                   >
                     {item.icon}
                   </span>
-                  <span className='text-xs font-medium leading-tight text-slate-700'>
-                    {item.label}
+                  <span className='space-y-0.5'>
+                    <span className='block text-xs font-semibold text-slate-700 group-hover:text-[#0B1AA0]'>
+                      {item.label}
+                    </span>
+                    <span className='block text-[10px] leading-tight text-slate-400'>
+                      {item.description}
+                    </span>
                   </span>
                 </button>
               ))}

@@ -18,8 +18,8 @@ export default function LandingPage() {
           Admin Workspace
         </h1>
         <p className='mt-5 max-w-xl text-base text-slate-500'>
-          Internal tools for the Aventude team. Select a module below to manage
-          forms, cases, and operations.
+          Internal tools for the team. Select a module below to manage forms,
+          cases, and operations.
         </p>
 
         {/* Product cards */}

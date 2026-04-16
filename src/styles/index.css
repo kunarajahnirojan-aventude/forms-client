@@ -1,0 +1,125 @@
+@import 'tailwindcss';
+
+@layer base {
+  :root {
+    --color-primary: #0b1aa0;
+    --color-primary-foreground: oklch(98% 0 0);
+    --color-destructive: oklch(55% 0.22 27);
+    --color-border: oklch(90% 0 0);
+    --color-input: oklch(90% 0 0);
+    --color-ring: #0b1aa0;
+    --color-background: oklch(99% 0 0);
+    --color-foreground: oklch(15% 0 0);
+    --color-muted: oklch(96% 0 0);
+    --color-muted-foreground: oklch(50% 0 0);
+    --color-card: oklch(100% 0 0);
+    --color-card-foreground: oklch(15% 0 0);
+    --radius: 0.5rem;
+  }
+
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+    border-color: var(--color-border);
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family:
+      system-ui,
+      -apple-system,
+      BlinkMacSystemFont,
+      'Segoe UI',
+      sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+@layer components {
+  .input-field {
+    @apply w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-800 outline-none transition-colors placeholder:text-slate-400 focus:border-[#0B1AA0] focus:ring-2 focus:ring-[#0B1AA0]/15;
+  }
+
+  .select-field {
+    @apply w-full appearance-none rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-800 outline-none transition-colors focus:border-[#0B1AA0] focus:ring-2 focus:ring-[#0B1AA0]/15;
+  }
+
+  .label-sm {
+    @apply text-xs font-semibold uppercase tracking-wide text-slate-400;
+  }
+
+  /* TipTap / ProseMirror rich text content */
+  .rich-text-content > * + * {
+    margin-top: 0.5em;
+  }
+
+  .rich-text-content h2 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin-top: 0.75em;
+  }
+
+  .rich-text-content h3 {
+    font-size: 0.975rem;
+    font-weight: 600;
+    color: #0f172a;
+    margin-top: 0.5em;
+  }
+
+  .rich-text-content p {
+    font-size: 0.875rem;
+    color: #475569;
+    line-height: 1.6;
+  }
+
+  .rich-text-content ul,
+  .rich-text-content ol {
+    padding-left: 1.25rem;
+    font-size: 0.875rem;
+    color: #475569;
+  }
+
+  .rich-text-content ul {
+    list-style-type: disc;
+  }
+
+  .rich-text-content ol {
+    list-style-type: decimal;
+  }
+
+  .rich-text-content strong {
+    font-weight: 600;
+    color: #1e293b;
+  }
+
+  .rich-text-content em {
+    font-style: italic;
+  }
+
+  .rich-text-content s {
+    text-decoration: line-through;
+  }
+
+  /* Placeholder */
+  .rich-text-content.is-editor-empty:first-child::before {
+    content: attr(data-placeholder);
+    float: left;
+    color: #94a3b8;
+    pointer-events: none;
+    height: 0;
+  }
+
+  /* ProseMirror placeholder via TipTap */
+  .ProseMirror p.is-editor-empty:first-child::before {
+    content: attr(data-placeholder);
+    float: left;
+    color: #94a3b8;
+    pointer-events: none;
+    height: 0;
+    font-size: 0.875rem;
+  }
+}

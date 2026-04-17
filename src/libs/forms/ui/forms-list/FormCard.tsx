@@ -14,7 +14,7 @@ import {
 } from 'lucide-react';
 import type { Form, FormStatus } from '@/libs/forms/store/types';
 import { formsEditPath } from '@/router/routes';
-import { formatDate, cn } from '@/utils';
+import { cn } from '@/utils';
 
 const STATUS_CONFIG: Record<
   FormStatus,
@@ -76,6 +76,10 @@ export function FormCard({
     return () => document.removeEventListener('mousedown', handleClick);
   }, []);
 
+  const totalQuestions = form.pages.reduce(
+    (sum, p) => sum + p.questions.length,
+    0,
+  );
   const status = STATUS_CONFIG[form.status];
   const gradient = THEME_GRADIENTS[form.theme.color] ?? THEME_GRADIENTS.blue;
 
@@ -134,9 +138,10 @@ export function FormCard({
           </div>
         </div>
 
-        {/* Updated date */}
+        {/* Pages + questions count */}
         <p className='text-xs text-slate-400'>
-          Updated {formatDate(form.updatedAt)}
+          {form.pages.length} {form.pages.length === 1 ? 'page' : 'pages'} &middot; {totalQuestions}{' '}
+          {totalQuestions === 1 ? 'question' : 'questions'}
         </p>
       </div>
 
@@ -155,7 +160,7 @@ export function FormCard({
               ? 'bg-slate-100 text-slate-700'
               : 'opacity-0 group-hover:opacity-100',
           )}
-          aria-label='Form options'
+          aria-label='Survey options'
         >
           <MoreVertical className='h-4 w-4' />
         </button>
@@ -164,7 +169,7 @@ export function FormCard({
           <div className='absolute right-0 z-20 mt-1 w-48 rounded-xl border border-slate-200 bg-white py-1 shadow-lg'>
             <MenuItem
               icon={<Edit3 className='h-4 w-4' />}
-              label='Edit form'
+              label='Edit survey'
               onClick={() => {
                 setMenuOpen(false);
                 navigate(formsEditPath(form.id));

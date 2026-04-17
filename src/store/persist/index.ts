@@ -10,6 +10,7 @@ type PersistedState = Pick<
 
 export const persistConfig: PersistOptions<AppState, PersistedState> = {
   name: STORAGE_KEYS.AUTH,
+  version: 2, // bump to clear old persisted state (questions→pages schema change)
   partialize: (state): PersistedState => ({
     user: state.user,
     token: state.token,

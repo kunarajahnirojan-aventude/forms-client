@@ -4,14 +4,15 @@ import { RootLayout } from '@/layouts/RootLayout';
 import { ROUTES } from './routes';
 
 const LandingPage = lazy(() => import('@/pages/LandingPage'));
-const FormsListPage = lazy(() => import('@/libs/forms/feature/forms-list'));
-const FormsCreatePage = lazy(() => import('@/libs/forms/feature/forms-create'));
-const FormsEditPage = lazy(() => import('@/libs/forms/feature/forms-edit'));
+const SurveysListPage = lazy(() => import('@/libs/forms/feature/forms-list'));
+const SurveysCreatePage = lazy(() => import('@/libs/forms/feature/forms-create'));
+const SurveysEditPage = lazy(() => import('@/libs/forms/feature/forms-edit'));
+const SurveyPreviewPage = lazy(() => import('@/pages/SurveyPreviewPage'));
 
 function PageLoader() {
   return (
     <div className='flex h-full min-h-[60vh] items-center justify-center'>
-      <div className='h-8 w-8 animate-spin rounded-full border-4 border-blue-600 border-t-transparent' />
+      <div className='h-8 w-8 animate-spin rounded-full border-4 border-[#0B1AA0] border-t-transparent' />
     </div>
   );
 }
@@ -30,29 +31,37 @@ export const router = createBrowserRouter([
     ),
   },
   {
+    path: ROUTES.SURVEYS_PREVIEW,
+    element: (
+      <Lazy>
+        <SurveyPreviewPage />
+      </Lazy>
+    ),
+  },
+  {
     element: <RootLayout />,
     children: [
       {
-        path: ROUTES.FORMS,
+        path: ROUTES.SURVEYS,
         element: (
           <Lazy>
-            <FormsListPage />
+            <SurveysListPage />
           </Lazy>
         ),
       },
       {
-        path: ROUTES.FORMS_NEW,
+        path: ROUTES.SURVEYS_NEW,
         element: (
           <Lazy>
-            <FormsCreatePage />
+            <SurveysCreatePage />
           </Lazy>
         ),
       },
       {
-        path: ROUTES.FORMS_EDIT,
+        path: ROUTES.SURVEYS_EDIT,
         element: (
           <Lazy>
-            <FormsEditPage />
+            <SurveysEditPage />
           </Lazy>
         ),
       },

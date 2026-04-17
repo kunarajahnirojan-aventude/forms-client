@@ -123,7 +123,7 @@ export function PreviewModal({ form, onClose }: PreviewModalProps) {
 
           {/* Questions */}
           <div className='space-y-6'>
-            {form.questions.map((q, idx) => {
+            {form.pages.flatMap((p) => p.questions).map((q, idx) => {
               const isSection = q.type === 'section';
               if (isSection) {
                 return (

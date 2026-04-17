@@ -15,20 +15,20 @@ export function EmptyState({ hasFilters }: EmptyStateProps) {
         <FileText className='h-8 w-8 text-[#0B1AA0]' />
       </div>
       <h3 className='mt-4 text-base font-semibold text-slate-800'>
-        {hasFilters ? 'No forms match your filters' : 'No forms yet'}
+        {hasFilters ? 'No surveys match your filters' : 'No surveys yet'}
       </h3>
       <p className='mt-1.5 max-w-xs text-sm text-slate-500'>
         {hasFilters
           ? 'Try adjusting your search or status filter.'
-          : 'Create your first form and start collecting responses in minutes.'}
+          : 'Create your first survey and start collecting responses in minutes.'}
       </p>
       {!hasFilters && (
         <button
-          onClick={() => navigate(ROUTES.FORMS_NEW)}
+          onClick={() => navigate(ROUTES.SURVEYS_NEW)}
           className='mt-6 inline-flex items-center gap-2 rounded-lg bg-[#0B1AA0] px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#0a179a]'
         >
           <Plus className='h-4 w-4' />
-          Create a form
+          Create a survey
         </button>
       )}
     </div>

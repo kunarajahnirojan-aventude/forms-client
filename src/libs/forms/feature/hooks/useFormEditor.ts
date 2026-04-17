@@ -8,6 +8,7 @@ import type {
   QuestionValidation,
   EditorSnapshot,
   ChoiceOption,
+  SurveyPage,
 } from '@/libs/forms/store/types';
 
 function defaultValidation(type: QuestionType): QuestionValidation {
@@ -62,7 +63,7 @@ function buildSnapshot(
   return {
     title: form.title,
     description: form.description,
-    questions: form.questions,
+    pages: form.pages,
     settings: form.settings,
     theme: form.theme,
   };
@@ -71,17 +72,23 @@ function buildSnapshot(
 export function useFormEditor_() {
   const { updateForm, forms } = useFormsStore();
   const editor = useFormEditor();
-  const { activeFormId, pushUndoSnapshot, setIsSaving, setLastSavedAt } =
+  const { activeFormId, activePageId, pushUndoSnapshot, setIsSaving, setLastSavedAt, setActivePage } =
     editor;
 
   const activeForm = forms.find((f) => f.id === activeFormId) ?? null;
+
+  // Default to first page when editor opens
+  useEffect(() => {
+    if (activeForm && activeForm.pages.length > 0 && !activePageId) {
+      setActivePage(activeForm.pages[0].id);
+    }
+  }, [activeForm, activePageId, setActivePage]);
 
   // Auto-save: debounce 1.5s after isDirty
   const [debouncedDirty] = useDebounce(editor.isDirty, 1500);
   useEffect(() => {
     if (debouncedDirty && activeFormId) {
       setIsSaving(true);
-      // Simulate async save (replace with real API call)
       setTimeout(() => {
         setIsSaving(false);
         setLastSavedAt(new Date().toISOString());
@@ -106,10 +113,10 @@ export function useFormEditor_() {
     return () => window.removeEventListener('keydown', handler);
   }, [editor]);
 
-  // ── Question actions ───────────────────────────────────────────────────────
+  // ── Question actions (all scoped to a pageId) ──────────────────────────────
 
   const addQuestion = useCallback(
-    (type: QuestionType) => {
+    (type: QuestionType, pageId: string) => {
       if (!activeFormId || !activeForm) return;
       const snap = buildSnapshot(forms, activeFormId);
       if (snap) pushUndoSnapshot(snap);
@@ -138,7 +145,9 @@ export function useFormEditor_() {
       };
 
       updateForm(activeFormId, {
-        questions: [...activeForm.questions, newQ],
+        pages: activeForm.pages.map((p) =>
+          p.id === pageId ? { ...p, questions: [...p.questions, newQ] } : p,
+        ),
       });
       editor.setSelectedQuestion(newQ.id);
     },
@@ -149,9 +158,12 @@ export function useFormEditor_() {
     (id: string, patch: Partial<Question>) => {
       if (!activeFormId || !activeForm) return;
       updateForm(activeFormId, {
-        questions: activeForm.questions.map((q) =>
-          q.id === id ? { ...q, ...patch } : q,
-        ),
+        pages: activeForm.pages.map((p) => ({
+          ...p,
+          questions: p.questions.map((q) =>
+            q.id === id ? { ...q, ...patch } : q,
+          ),
+        })),
       });
       editor.setIsDirty(true);
     },
@@ -164,7 +176,10 @@ export function useFormEditor_() {
       const snap = buildSnapshot(forms, activeFormId);
       if (snap) pushUndoSnapshot(snap);
       updateForm(activeFormId, {
-        questions: activeForm.questions.filter((q) => q.id !== id),
+        pages: activeForm.pages.map((p) => ({
+          ...p,
+          questions: p.questions.filter((q) => q.id !== id),
+        })),
       });
       if (editor.selectedQuestionId === id) editor.setSelectedQuestion(null);
     },
@@ -176,24 +191,75 @@ export function useFormEditor_() {
       if (!activeFormId || !activeForm) return;
       const snap = buildSnapshot(forms, activeFormId);
       if (snap) pushUndoSnapshot(snap);
-      const idx = activeForm.questions.findIndex((q) => q.id === id);
-      if (idx === -1) return;
-      const copy: Question = { ...activeForm.questions[idx], id: nanoid() };
-      const next = [...activeForm.questions];
-      next.splice(idx + 1, 0, copy);
-      updateForm(activeFormId, { questions: next });
+      updateForm(activeFormId, {
+        pages: activeForm.pages.map((p) => {
+          const idx = p.questions.findIndex((q) => q.id === id);
+          if (idx === -1) return p;
+          const copy: Question = { ...p.questions[idx], id: nanoid() };
+          const next = [...p.questions];
+          next.splice(idx + 1, 0, copy);
+          return { ...p, questions: next };
+        }),
+      });
     },
     [activeFormId, activeForm, forms, pushUndoSnapshot, updateForm],
   );
 
   const reorderQuestions = useCallback(
-    (newOrder: Question[]) => {
-      if (!activeFormId) return;
-      updateForm(activeFormId, { questions: newOrder });
+    (pageId: string, newOrder: Question[]) => {
+      if (!activeFormId || !activeForm) return;
+      updateForm(activeFormId, {
+        pages: activeForm.pages.map((p) =>
+          p.id === pageId ? { ...p, questions: newOrder } : p,
+        ),
+      });
       editor.setIsDirty(true);
     },
-    [activeFormId, updateForm, editor],
+    [activeFormId, activeForm, updateForm, editor],
   );
+
+  // ── Page actions ────────────────────────────────────────────────────────────
+
+  const addPage = useCallback(() => {
+    if (!activeFormId || !activeForm) return;
+    const snap = buildSnapshot(forms, activeFormId);
+    if (snap) pushUndoSnapshot(snap);
+    const newPage: SurveyPage = {
+      id: nanoid(),
+      title: `Page ${activeForm.pages.length + 1}`,
+      questions: [],
+    };
+    updateForm(activeFormId, { pages: [...activeForm.pages, newPage] });
+    setActivePage(newPage.id);
+  }, [activeFormId, activeForm, forms, pushUndoSnapshot, updateForm, setActivePage]);
+
+  const updatePage = useCallback(
+    (pageId: string, patch: Partial<SurveyPage>) => {
+      if (!activeFormId || !activeForm) return;
+      updateForm(activeFormId, {
+        pages: activeForm.pages.map((p) =>
+          p.id === pageId ? { ...p, ...patch } : p,
+        ),
+      });
+      editor.setIsDirty(true);
+    },
+    [activeFormId, activeForm, updateForm, editor],
+  );
+
+  const deletePage = useCallback(
+    (pageId: string) => {
+      if (!activeFormId || !activeForm) return;
+      if (activeForm.pages.length <= 1) return; // keep at least one
+      const snap = buildSnapshot(forms, activeFormId);
+      if (snap) pushUndoSnapshot(snap);
+      const remaining = activeForm.pages.filter((p) => p.id !== pageId);
+      updateForm(activeFormId, { pages: remaining });
+      if (activePageId === pageId) setActivePage(remaining[0]?.id ?? null);
+    },
+    [activeFormId, activeForm, forms, pushUndoSnapshot, updateForm, activePageId, setActivePage],
+  );
+
+  // ── Form meta / settings / theme ────────────────────────────────────────────
 
   const updateFormMeta = useCallback(
     (patch: { title?: string; description?: string }) => {
@@ -234,8 +300,12 @@ export function useFormEditor_() {
     deleteQuestion,
     duplicateQuestion,
     reorderQuestions,
+    addPage,
+    updatePage,
+    deletePage,
     updateFormMeta,
     updateFormSettings,
     updateFormTheme,
   };
 }
+

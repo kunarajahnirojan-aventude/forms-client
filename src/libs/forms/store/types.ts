@@ -176,7 +176,18 @@ export interface FormTheme {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Form
+// Survey Page
+// ─────────────────────────────────────────────────────────────────────────────
+
+export interface SurveyPage {
+  id: string;
+  title: string;
+  description?: string;
+  questions: Question[];
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Form (Survey)
 // ─────────────────────────────────────────────────────────────────────────────
 
 export type FormStatus = 'draft' | 'published' | 'closed';
@@ -186,7 +197,7 @@ export interface Form {
   title: string;
   description?: string;
   status: FormStatus;
-  questions: Question[];
+  pages: SurveyPage[];
   settings: FormSettings;
   theme: FormTheme;
   responseCount: number;
@@ -202,7 +213,7 @@ export interface Form {
 export interface EditorSnapshot {
   title: string;
   description?: string;
-  questions: Question[];
+  pages: SurveyPage[];
   settings: FormSettings;
   theme: FormTheme;
 }
@@ -228,17 +239,19 @@ export interface FormsState {
 
 export interface FormEditorState {
   activeFormId: string | null;
+  activePageId: string | null;
   selectedQuestionId: string | null;
   isDirty: boolean;
   isSaving: boolean;
   lastSavedAt: string | null;
-  rightPanel: 'questions' | 'settings' | 'theme';
+  rightPanel: 'settings' | 'theme' | null;
   undoStack: EditorSnapshot[];
   redoStack: EditorSnapshot[];
 
   // Actions
   openEditor: (formId: string) => void;
   closeEditor: () => void;
+  setActivePage: (pageId: string | null) => void;
   setSelectedQuestion: (id: string | null) => void;
   setIsDirty: (v: boolean) => void;
   setIsSaving: (v: boolean) => void;

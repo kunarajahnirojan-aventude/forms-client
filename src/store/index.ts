@@ -73,6 +73,7 @@ export const useFormEditor = () =>
   useAppStore(
     useShallow((s) => ({
       activeFormId: s.activeFormId,
+      activePageId: s.activePageId,
       selectedQuestionId: s.selectedQuestionId,
       isDirty: s.isDirty,
       isSaving: s.isSaving,
@@ -82,6 +83,7 @@ export const useFormEditor = () =>
       redoStack: s.redoStack,
       openEditor: s.openEditor,
       closeEditor: s.closeEditor,
+      setActivePage: s.setActivePage,
       setSelectedQuestion: s.setSelectedQuestion,
       setIsDirty: s.setIsDirty,
       setIsSaving: s.setIsSaving,

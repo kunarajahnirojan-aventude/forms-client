@@ -2,13 +2,24 @@ export const ROUTES = {
   ROOT: '/',
   LOGIN: '/login',
   DASHBOARD: '/dashboard',
-  FORMS: '/forms',
-  FORMS_NEW: '/forms/new',
-  FORMS_EDIT: '/forms/:id/edit',
+  SURVEYS: '/surveys',
+  SURVEYS_NEW: '/surveys/new',
+  SURVEYS_EDIT: '/surveys/:id/edit',
+  SURVEYS_PREVIEW: '/surveys/:id/preview',
 } as const;
 
 export type Route = (typeof ROUTES)[keyof typeof ROUTES];
 
+export function surveysEditPath(id: string) {
+  return `/surveys/${id}/edit`;
+}
+
+export function surveysPreviewPath(id: string) {
+  return `/surveys/${id}/preview`;
+}
+
+// Legacy aliases kept so old imports don't break during refactor
+export const FORMS = '/surveys';
 export function formsEditPath(id: string) {
-  return `/forms/${id}/edit`;
+  return surveysEditPath(id);
 }

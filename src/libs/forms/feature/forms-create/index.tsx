@@ -2,10 +2,10 @@ import { useNavigate } from 'react-router-dom';
 import { nanoid } from 'nanoid';
 import { useFormsStore, useFormEditor } from '@/store';
 import { FormSetupView } from '@/libs/forms/ui/form-setup/FormSetupView';
-import { formsEditPath } from '@/router/routes';
+import { surveysEditPath } from '@/router/routes';
 import type { Form } from '@/libs/forms/store/types';
 
-export default function FormsCreatePage() {
+export default function SurveysCreatePage() {
   const navigate = useNavigate();
   const { addForm } = useFormsStore();
   const { openEditor } = useFormEditor();
@@ -18,10 +18,10 @@ export default function FormsCreatePage() {
       title,
       description,
       status: 'draft',
-      questions: [],
+      pages: [{ id: nanoid(), title: 'Page 1', questions: [] }],
       settings: {
         acceptingResponses: true,
-        confirmationMessage: 'Thank you for completing this form.',
+        confirmationMessage: 'Thank you for completing this survey.',
         showProgressBar: false,
         allowMultipleSubmissions: false,
         requireSignIn: false,
@@ -39,7 +39,7 @@ export default function FormsCreatePage() {
     };
     addForm(newForm);
     openEditor(id);
-    navigate(formsEditPath(id), { replace: true });
+    navigate(surveysEditPath(id), { replace: true });
   }
 
   return <FormSetupView onSubmit={handleSetupSubmit} />;

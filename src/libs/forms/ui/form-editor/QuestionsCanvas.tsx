@@ -77,33 +77,26 @@ export function QuestionsCanvas({
       </DragOverlay>
 
       {/* Add question button */}
-      <div className='relative'>
+      {/* Inline add question */}
+      {showAddMenu ? (
+        <div className='mt-2 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm'>
+          <QuestionTypeMenu
+            onSelect={(type) => {
+              onAddQuestion(type);
+              setShowAddMenu(false);
+            }}
+            onClose={() => setShowAddMenu(false)}
+          />
+        </div>
+      ) : (
         <button
-          onClick={() => setShowAddMenu((v) => !v)}
+          onClick={() => setShowAddMenu(true)}
           className='flex w-full items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-slate-200 py-4 text-sm font-medium text-slate-400 transition-colors hover:border-[#0B1AA0]/40 hover:bg-[#0B1AA0]/5 hover:text-[#0B1AA0]'
         >
           <Plus className='h-4 w-4' />
           Add question
         </button>
-
-        {showAddMenu && (
-          <>
-            <div
-              className='fixed inset-0 z-10 bg-black/20 backdrop-blur-[1px]'
-              onClick={() => setShowAddMenu(false)}
-            />
-            <div className='fixed left-1/2 top-1/2 z-20 -translate-x-1/2 -translate-y-1/2'>
-              <QuestionTypeMenu
-                onSelect={(type) => {
-                  onAddQuestion(type);
-                  setShowAddMenu(false);
-                }}
-                onClose={() => setShowAddMenu(false)}
-              />
-            </div>
-          </>
-        )}
-      </div>
+      )}
     </DndContext>
   );
 }

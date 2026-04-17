@@ -25,7 +25,7 @@ export function FormSetupView({ onSubmit }: FormSetupViewProps) {
       <div className='flex items-center justify-between border-b border-slate-100 bg-white px-6 py-3 shadow-sm'>
         <button
           type='button'
-          onClick={() => navigate(ROUTES.FORMS)}
+          onClick={() => navigate(ROUTES.SURVEYS)}
           className='flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-sm font-medium text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-700'
         >
           <ChevronLeft className='h-4 w-4' />
@@ -54,7 +54,7 @@ export function FormSetupView({ onSubmit }: FormSetupViewProps) {
               Let's start with the basics
             </h1>
             <p className='mt-2.5 text-sm text-slate-500'>
-              Give your form a name and an optional description.
+              Give your survey a name and an optional description.
               <br />
               You can always update these later.
             </p>
@@ -71,14 +71,14 @@ export function FormSetupView({ onSubmit }: FormSetupViewProps) {
                 htmlFor='form-title'
                 className='mb-2 block text-sm font-semibold text-slate-700'
               >
-                Form title <span className='text-red-400'>*</span>
+                Survey title <span className='text-red-400'>*</span>
               </label>
               <input
                 id='form-title'
                 type='text'
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                placeholder='e.g. Customer Satisfaction Survey'
+                placeholder='e.g. Passport Filling Survey'
                 autoFocus
                 className='w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-base text-slate-900 outline-none placeholder:text-slate-400 transition-all focus:border-[#0B1AA0] focus:ring-2 focus:ring-[#0B1AA0]/15'
               />
@@ -95,7 +95,7 @@ export function FormSetupView({ onSubmit }: FormSetupViewProps) {
               <RichTextEditor
                 value={description}
                 onChange={setDescription}
-                placeholder='Describe what this form is about, who should fill it out, any instructions…'
+                placeholder='Describe what this survey is about, who should fill it out, any instructions…'
                 minHeight='9rem'
               />
             </div>

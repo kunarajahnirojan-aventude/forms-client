@@ -11,11 +11,12 @@ export const createFormEditorSlice: StateCreator<
   FormEditorState
 > = (set) => ({
   activeFormId: null,
+  activePageId: null,
   selectedQuestionId: null,
   isDirty: false,
   isSaving: false,
   lastSavedAt: null,
-  rightPanel: 'questions',
+  rightPanel: null,
   undoStack: [],
   redoStack: [],
 
@@ -23,12 +24,13 @@ export const createFormEditorSlice: StateCreator<
     set(
       {
         activeFormId: formId,
+        activePageId: null,
         selectedQuestionId: null,
         isDirty: false,
         isSaving: false,
         undoStack: [],
         redoStack: [],
-        rightPanel: 'questions',
+        rightPanel: null,
       },
       false,
       'editor/openEditor',
@@ -38,6 +40,7 @@ export const createFormEditorSlice: StateCreator<
     set(
       {
         activeFormId: null,
+        activePageId: null,
         selectedQuestionId: null,
         isDirty: false,
         isSaving: false,
@@ -47,6 +50,9 @@ export const createFormEditorSlice: StateCreator<
       false,
       'editor/closeEditor',
     ),
+
+  setActivePage: (pageId) =>
+    set({ activePageId: pageId }, false, 'editor/setActivePage'),
 
   setSelectedQuestion: (id) =>
     set({ selectedQuestionId: id }, false, 'editor/setSelectedQuestion'),
@@ -83,7 +89,7 @@ export const createFormEditorSlice: StateCreator<
         const currentSnapshot: EditorSnapshot = {
           title: activeForm.title,
           description: activeForm.description,
-          questions: activeForm.questions,
+          pages: activeForm.pages,
           settings: activeForm.settings,
           theme: activeForm.theme,
         };
@@ -95,7 +101,7 @@ export const createFormEditorSlice: StateCreator<
                   ...f,
                   title: prev.title,
                   description: prev.description,
-                  questions: prev.questions,
+                  pages: prev.pages,
                   settings: prev.settings,
                   theme: prev.theme,
                   updatedAt: new Date().toISOString(),
@@ -122,7 +128,7 @@ export const createFormEditorSlice: StateCreator<
         const currentSnapshot: EditorSnapshot = {
           title: activeForm.title,
           description: activeForm.description,
-          questions: activeForm.questions,
+          pages: activeForm.pages,
           settings: activeForm.settings,
           theme: activeForm.theme,
         };
@@ -134,7 +140,7 @@ export const createFormEditorSlice: StateCreator<
                   ...f,
                   title: next.title,
                   description: next.description,
-                  questions: next.questions,
+                  pages: next.pages,
                   settings: next.settings,
                   theme: next.theme,
                   updatedAt: new Date().toISOString(),

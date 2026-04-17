@@ -137,7 +137,7 @@ interface QuestionTypeMenuProps {
 
 export function QuestionTypeMenu({ onSelect }: QuestionTypeMenuProps) {
   return (
-    <div className='w-[640px] overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl shadow-black/10'>
+    <div className='w-full overflow-hidden rounded-2xl'>
       {/* Header */}
       <div className='flex items-center justify-between border-b border-slate-100 bg-slate-50/70 px-5 py-3.5'>
         <p className='text-sm font-semibold text-slate-700'>Add a question</p>

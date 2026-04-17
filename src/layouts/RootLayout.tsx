@@ -11,21 +11,21 @@ export function RootLayout() {
         <div className='mx-auto flex h-14 max-w-7xl items-center justify-between px-4 sm:px-6'>
           {/* Brand */}
           <NavLink
-            to={ROUTES.FORMS}
+            to={ROUTES.SURVEYS}
             className='flex items-center gap-2.5 select-none'
           >
             <div className='flex h-8 w-8 items-center justify-center rounded-lg bg-[#0B1AA0]'>
               <FileText className='h-4 w-4 text-white' />
             </div>
             <span className='text-base font-semibold tracking-tight text-slate-900'>
-              Forms
+              Surveys
             </span>
           </NavLink>
 
           {/* Nav links */}
           <nav className='hidden items-center gap-1 sm:flex'>
             <NavLink
-              to={ROUTES.FORMS}
+              to={ROUTES.SURVEYS}
               end
               className={({ isActive }) =>
                 cn(
@@ -36,18 +36,18 @@ export function RootLayout() {
                 )
               }
             >
-              My Forms
+              My Surveys
             </NavLink>
           </nav>
 
           {/* Right actions */}
           <div className='flex items-center gap-3'>
             <NavLink
-              to={ROUTES.FORMS_NEW}
+              to={ROUTES.SURVEYS_NEW}
               className='inline-flex items-center gap-1.5 rounded-lg bg-[#0B1AA0] px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-[#0a179a] active:bg-[#091590]'
             >
               <Plus className='h-4 w-4' />
-              <span className='hidden sm:inline'>New Form</span>
+              <span className='hidden sm:inline'>New Survey</span>
             </NavLink>
 
             <NavLink

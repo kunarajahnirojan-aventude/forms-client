@@ -1,10 +1,10 @@
 import { useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useFormsStore, useFormEditor } from '@/store';
-import { FormEditorView } from '@/libs/forms/ui/form-editor';
+import { SurveyEditorView } from '@/libs/forms/ui/form-editor';
 import { ROUTES } from '@/router/routes';
 
-export default function FormsEditPage() {
+export default function SurveysEditPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { forms } = useFormsStore();
@@ -14,12 +14,11 @@ export default function FormsEditPage() {
 
   useEffect(() => {
     if (!id) {
-      navigate(ROUTES.FORMS, { replace: true });
+      navigate(ROUTES.SURVEYS, { replace: true });
       return;
     }
     if (!form) {
-      // Form not found → redirect to list
-      navigate(ROUTES.FORMS, { replace: true });
+      navigate(ROUTES.SURVEYS, { replace: true });
       return;
     }
     openEditor(id);
@@ -34,5 +33,5 @@ export default function FormsEditPage() {
     );
   }
 
-  return <FormEditorView />;
+  return <SurveyEditorView />;
 }

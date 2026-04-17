@@ -72,8 +72,14 @@ function buildSnapshot(
 export function useFormEditor_() {
   const { updateForm, forms } = useFormsStore();
   const editor = useFormEditor();
-  const { activeFormId, activePageId, pushUndoSnapshot, setIsSaving, setLastSavedAt, setActivePage } =
-    editor;
+  const {
+    activeFormId,
+    activePageId,
+    pushUndoSnapshot,
+    setIsSaving,
+    setLastSavedAt,
+    setActivePage,
+  } = editor;
 
   const activeForm = forms.find((f) => f.id === activeFormId) ?? null;
 
@@ -231,7 +237,14 @@ export function useFormEditor_() {
     };
     updateForm(activeFormId, { pages: [...activeForm.pages, newPage] });
     setActivePage(newPage.id);
-  }, [activeFormId, activeForm, forms, pushUndoSnapshot, updateForm, setActivePage]);
+  }, [
+    activeFormId,
+    activeForm,
+    forms,
+    pushUndoSnapshot,
+    updateForm,
+    setActivePage,
+  ]);
 
   const updatePage = useCallback(
     (pageId: string, patch: Partial<SurveyPage>) => {
@@ -256,7 +269,15 @@ export function useFormEditor_() {
       updateForm(activeFormId, { pages: remaining });
       if (activePageId === pageId) setActivePage(remaining[0]?.id ?? null);
     },
-    [activeFormId, activeForm, forms, pushUndoSnapshot, updateForm, activePageId, setActivePage],
+    [
+      activeFormId,
+      activeForm,
+      forms,
+      pushUndoSnapshot,
+      updateForm,
+      activePageId,
+      setActivePage,
+    ],
   );
 
   // ── Form meta / settings / theme ────────────────────────────────────────────
@@ -308,4 +329,3 @@ export function useFormEditor_() {
     updateFormTheme,
   };
 }
-

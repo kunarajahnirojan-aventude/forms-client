@@ -123,58 +123,64 @@ export function PreviewModal({ form, onClose }: PreviewModalProps) {
 
           {/* Questions */}
           <div className='space-y-6'>
-            {form.pages.flatMap((p) => p.questions).map((q, idx) => {
-              const isSection = q.type === 'section';
-              if (isSection) {
+            {form.pages
+              .flatMap((p) => p.questions)
+              .map((q, idx) => {
+                const isSection = q.type === 'section';
+                if (isSection) {
+                  return (
+                    <div key={q.id} className='pt-2'>
+                      <h2
+                        className={cn(
+                          'text-base font-semibold',
+                          form.theme.darkMode ? 'text-white' : 'text-slate-800',
+                        )}
+                      >
+                        {q.title || `Section ${idx + 1}`}
+                      </h2>
+                      <SectionQuestion question={q} />
+                    </div>
+                  );
+                }
                 return (
-                  <div key={q.id} className='pt-2'>
-                    <h2
-                      className={cn(
-                        'text-base font-semibold',
-                        form.theme.darkMode ? 'text-white' : 'text-slate-800',
-                      )}
-                    >
-                      {q.title || `Section ${idx + 1}`}
-                    </h2>
-                    <SectionQuestion question={q} />
-                  </div>
-                );
-              }
-              return (
-                <div
-                  key={q.id}
-                  className={cn(
-                    'rounded-xl border p-5',
-                    form.theme.darkMode
-                      ? 'border-slate-700 bg-slate-800'
-                      : 'border-slate-100 bg-white shadow-sm',
-                  )}
-                >
-                  <p
+                  <div
+                    key={q.id}
                     className={cn(
-                      'text-sm font-medium',
-                      form.theme.darkMode ? 'text-slate-200' : 'text-slate-800',
+                      'rounded-xl border p-5',
+                      form.theme.darkMode
+                        ? 'border-slate-700 bg-slate-800'
+                        : 'border-slate-100 bg-white shadow-sm',
                     )}
                   >
-                    {q.title || `Question ${idx + 1}`}
-                    {q.required && <span className='ml-1 text-red-500'>*</span>}
-                  </p>
-                  {q.description && (
                     <p
                       className={cn(
-                        'mt-1 text-xs',
+                        'text-sm font-medium',
                         form.theme.darkMode
-                          ? 'text-slate-400'
-                          : 'text-slate-500',
+                          ? 'text-slate-200'
+                          : 'text-slate-800',
                       )}
                     >
-                      {q.description}
+                      {q.title || `Question ${idx + 1}`}
+                      {q.required && (
+                        <span className='ml-1 text-red-500'>*</span>
+                      )}
                     </p>
-                  )}
-                  <PreviewQuestionBody question={q} />
-                </div>
-              );
-            })}
+                    {q.description && (
+                      <p
+                        className={cn(
+                          'mt-1 text-xs',
+                          form.theme.darkMode
+                            ? 'text-slate-400'
+                            : 'text-slate-500',
+                        )}
+                      >
+                        {q.description}
+                      </p>
+                    )}
+                    <PreviewQuestionBody question={q} />
+                  </div>
+                );
+              })}
           </div>
 
           {/* Submit button */}

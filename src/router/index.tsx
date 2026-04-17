@@ -5,7 +5,9 @@ import { ROUTES } from './routes';
 
 const LandingPage = lazy(() => import('@/pages/LandingPage'));
 const SurveysListPage = lazy(() => import('@/libs/forms/feature/forms-list'));
-const SurveysCreatePage = lazy(() => import('@/libs/forms/feature/forms-create'));
+const SurveysCreatePage = lazy(
+  () => import('@/libs/forms/feature/forms-create'),
+);
 const SurveysEditPage = lazy(() => import('@/libs/forms/feature/forms-edit'));
 const SurveyPreviewPage = lazy(() => import('@/pages/SurveyPreviewPage'));
 

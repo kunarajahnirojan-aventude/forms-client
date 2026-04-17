@@ -57,7 +57,8 @@ export function SurveyEditorView() {
     );
   }
 
-  const activePage = activeForm.pages.find((p) => p.id === activePageId) ?? null;
+  const activePage =
+    activeForm.pages.find((p) => p.id === activePageId) ?? null;
 
   function handlePublishToggle() {
     updateFormSettings({
@@ -275,4 +276,3 @@ export function SurveyEditorView() {
     </div>
   );
 }
-

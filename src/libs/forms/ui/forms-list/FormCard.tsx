@@ -140,7 +140,8 @@ export function FormCard({
 
         {/* Pages + questions count */}
         <p className='text-xs text-slate-400'>
-          {form.pages.length} {form.pages.length === 1 ? 'page' : 'pages'} &middot; {totalQuestions}{' '}
+          {form.pages.length} {form.pages.length === 1 ? 'page' : 'pages'}{' '}
+          &middot; {totalQuestions}{' '}
           {totalQuestions === 1 ? 'question' : 'questions'}
         </p>
       </div>

@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { FileText, Briefcase, ArrowRight, Sparkles } from 'lucide-react';
+import { FileText, Briefcase, ArrowRight } from 'lucide-react';
 import { ROUTES } from '@/router/routes';
 
 export default function LandingPage() {
@@ -12,10 +12,6 @@ export default function LandingPage() {
 
       <div className='flex w-full max-w-4xl flex-col items-center text-center'>
         {/* Badge */}
-        <div className='mb-6 inline-flex items-center gap-2 rounded-full border border-[#0B1AA0]/20 bg-[#0B1AA0]/5 px-4 py-1.5 text-xs font-medium text-[#0B1AA0]'>
-          <Sparkles className='h-3.5 w-3.5' />
-          Aventude Admin Portal
-        </div>
 
         {/* Headline */}
         <h1 className='text-5xl font-bold tracking-tight text-slate-900 sm:text-6xl'>

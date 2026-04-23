@@ -8,7 +8,7 @@ export default function SurveysEditPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { forms } = useFormsStore();
-  const { openEditor, activeFormId } = useFormEditor();
+  const { openEditor, activeFormId, setActivePage } = useFormEditor();
 
   const form = forms.find((f) => f.id === id);
 
@@ -22,6 +22,9 @@ export default function SurveysEditPage() {
       return;
     }
     openEditor(id);
+    // Immediately select the first page so there's no blank-canvas flash
+    const firstPageId = form.pages[0]?.id;
+    if (firstPageId) setActivePage(firstPageId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 

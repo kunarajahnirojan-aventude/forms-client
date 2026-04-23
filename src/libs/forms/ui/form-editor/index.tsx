@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import {
   Undo2,
   Redo2,
@@ -8,6 +9,7 @@ import {
   Settings,
   Palette,
   ChevronLeft,
+  PencilLine,
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useFormEditor_ } from '@/libs/forms/feature/hooks/useFormEditor';
@@ -45,9 +47,12 @@ export function SurveyEditorView() {
     addPage,
     updatePage,
     deletePage,
+    updateFormMeta,
     updateFormSettings,
     updateFormTheme,
   } = editor;
+
+  const [isEditingTitle, setIsEditingTitle] = useState(false);
 
   if (!activeForm) {
     return (
@@ -57,8 +62,11 @@ export function SurveyEditorView() {
     );
   }
 
+  // Fallback to first page so there's never a blank canvas on first load
   const activePage =
-    activeForm.pages.find((p) => p.id === activePageId) ?? null;
+    activeForm.pages.find((p) => p.id === activePageId) ??
+    activeForm.pages[0] ??
+    null;
 
   function handlePublishToggle() {
     updateFormSettings({
@@ -122,11 +130,32 @@ export function SurveyEditorView() {
           <span>{saveStatus}</span>
         </div>
 
-        {/* Survey title (centre) */}
+        {/* Survey title (centre) – click to edit */}
         <div className='flex-1 text-center'>
-          <span className='mx-auto block max-w-xs truncate text-sm font-semibold text-slate-800'>
-            {activeForm.title}
-          </span>
+          {isEditingTitle ? (
+            <input
+              autoFocus
+              value={activeForm.title}
+              onChange={(e) => updateFormMeta({ title: e.target.value })}
+              onBlur={() => setIsEditingTitle(false)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === 'Escape')
+                  setIsEditingTitle(false);
+              }}
+              className='mx-auto block w-56 rounded border border-[#0B1AA0]/30 bg-white px-2 py-0.5 text-center text-sm font-semibold text-slate-800 outline-none focus:border-[#0B1AA0] focus:ring-2 focus:ring-[#0B1AA0]/15'
+            />
+          ) : (
+            <button
+              onClick={() => setIsEditingTitle(true)}
+              className='group mx-auto flex max-w-xs items-center gap-1.5 truncate rounded px-2 py-0.5 text-sm font-semibold text-slate-800 hover:bg-slate-100'
+              title='Click to edit title'
+            >
+              <span className='truncate'>
+                {activeForm.title || 'Untitled Survey'}
+              </span>
+              <PencilLine className='h-3 w-3 shrink-0 text-slate-400 opacity-0 transition-opacity group-hover:opacity-100' />
+            </button>
+          )}
         </div>
 
         {/* Panel toggles */}
@@ -197,21 +226,33 @@ export function SurveyEditorView() {
         <div className='flex-1 overflow-y-auto px-6 py-6'>
           {activePage ? (
             <div className='mx-auto max-w-2xl'>
-              {/* Survey description banner (first page only) */}
-              {activeForm.pages[0]?.id === activePage.id &&
-                activeForm.description && (
-                  <div className='mb-4 rounded-xl border border-slate-100 bg-white px-5 py-4'>
-                    <p className='mb-1 text-[11px] font-bold uppercase tracking-widest text-slate-400'>
-                      Survey Description
-                    </p>
-                    <div
-                      className='rich-text-content text-sm text-slate-600'
-                      dangerouslySetInnerHTML={{
-                        __html: activeForm.description,
-                      }}
-                    />
-                  </div>
-                )}
+              {/* Survey info card – editable (first page only) */}
+              {activeForm.pages[0]?.id === activePage.id && (
+                <div className='mb-4 rounded-xl border border-[#0B1AA0]/20 bg-[#0B1AA0]/5 px-5 py-4'>
+                  <p className='mb-2 text-[11px] font-bold uppercase tracking-widest text-[#0B1AA0]/50'>
+                    Survey Info · Step 1
+                  </p>
+                  <input
+                    value={activeForm.title}
+                    onChange={(e) => updateFormMeta({ title: e.target.value })}
+                    placeholder='Survey title'
+                    className='w-full bg-transparent text-xl font-bold text-slate-900 outline-none placeholder:text-slate-300'
+                  />
+                  <textarea
+                    value={(activeForm.description ?? '')
+                      .replace(/<[^>]*>/g, '')
+                      .trim()}
+                    onChange={(e) =>
+                      updateFormMeta({
+                        description: e.target.value || undefined,
+                      })
+                    }
+                    placeholder='Survey description (optional)'
+                    rows={2}
+                    className='mt-1.5 w-full resize-none bg-transparent text-sm text-slate-600 outline-none placeholder:text-slate-300'
+                  />
+                </div>
+              )}
 
               {/* Page title / description */}
               <div className='mb-4 rounded-xl border border-slate-200 bg-white px-5 py-4'>
@@ -261,7 +302,7 @@ export function SurveyEditorView() {
 
         {/* Right: collapsible settings / theme panel */}
         {rightPanel && (
-          <div className='w-72 shrink-0 overflow-y-auto border-l border-slate-200 bg-white'>
+          <div className='w-72 shrink-0 overflow-y-auto border-l border-slate-200 bg-white p-5'>
             {rightPanel === 'settings' ? (
               <SettingsPanel
                 settings={activeForm.settings}

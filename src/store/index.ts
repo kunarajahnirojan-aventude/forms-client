@@ -26,10 +26,6 @@ export const useAppStore = create<AppState>()(
   ),
 );
 
-// ---------------------------------------------------------------------------
-// Selector hooks (avoid re-renders when only part of the state changes)
-// ---------------------------------------------------------------------------
-
 export const useAuth = () =>
   useAppStore(
     useShallow((s) => ({

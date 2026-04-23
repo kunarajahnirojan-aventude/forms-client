@@ -39,6 +39,37 @@ const PLATFORMS: {
   },
 ];
 
+// ── URL validation ───────────────────────────────────────────────────────────
+
+const URL_PATTERNS: Record<ImportPlatform, { pattern: RegExp; hint: string }> =
+  {
+    google: {
+      pattern: /^https:\/\/(docs\.google\.com\/forms\/|forms\.gle\/).+/i,
+      hint: 'Must start with https://docs.google.com/forms/ or https://forms.gle/',
+    },
+    microsoft: {
+      pattern: /^https:\/\/(forms\.office\.com|forms\.microsoft\.com)\/.+/i,
+      hint: 'Must start with https://forms.office.com/ or https://forms.microsoft.com/',
+    },
+    surveymonkey: {
+      pattern: /^https:\/\/(www\.)?surveymonkey\.(com|co\.uk)\/.+/i,
+      hint: 'Must start with https://www.surveymonkey.com/',
+    },
+  };
+
+function validateUrl(url: string, platform: ImportPlatform): string | null {
+  if (!url.trim()) return 'Please enter a URL.';
+  try {
+    new URL(url);
+  } catch {
+    return 'Please enter a valid URL (e.g. https://…).';
+  }
+  if (!URL_PATTERNS[platform].pattern.test(url)) {
+    return URL_PATTERNS[platform].hint;
+  }
+  return null;
+}
+
 const MODE_LABELS: Record<string, string> = {
   page: 'Page by page',
   question: 'Question by question',
@@ -65,6 +96,8 @@ export function ImportFormModal({
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [platform, setPlatform] = useState<ImportPlatform | null>(null);
   const [url, setUrl] = useState('');
+  const [urlError, setUrlError] = useState<string | null>(null);
+  const [urlTouched, setUrlTouched] = useState(false);
   const [importedForm, setImportedForm] = useState<Form | null>(null);
   const [loading, setLoading] = useState(false);
   const contentRef = useRef<HTMLDivElement>(null);
@@ -88,11 +121,18 @@ export function ImportFormModal({
 
   function handleSelectPlatform(p: ImportPlatform) {
     setPlatform(p);
+    setUrl('');
+    setUrlError(null);
+    setUrlTouched(false);
     setStep(2);
   }
 
   async function handleLoadSample() {
     if (!platform) return;
+    const error = validateUrl(url, platform);
+    setUrlTouched(true);
+    setUrlError(error);
+    if (error) return;
     setLoading(true);
     // Simulate a brief async fetch
     await new Promise((r) => setTimeout(r, 600));
@@ -194,14 +234,37 @@ export function ImportFormModal({
               <input
                 type='url'
                 value={url}
-                onChange={(e) => setUrl(e.target.value)}
-                placeholder={`https://forms.${selectedPlatform.id === 'google' ? 'gle' : selectedPlatform.id === 'microsoft' ? 'office.com' : 'surveymonkey.com'}/...`}
-                className='w-full rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-700 focus:border-[#0B1AA0] focus:outline-none focus:ring-2 focus:ring-[#0B1AA0]/20'
+                onChange={(e) => {
+                  setUrl(e.target.value);
+                  if (urlTouched) {
+                    setUrlError(validateUrl(e.target.value, platform!));
+                  }
+                }}
+                onBlur={() => {
+                  setUrlTouched(true);
+                  setUrlError(validateUrl(url, platform!));
+                }}
+                placeholder={
+                  platform === 'google'
+                    ? 'https://docs.google.com/forms/d/…/viewform'
+                    : platform === 'microsoft'
+                      ? 'https://forms.office.com/r/…'
+                      : 'https://www.surveymonkey.com/r/…'
+                }
+                className={`w-full rounded-lg border px-3 py-2 text-sm text-slate-700 focus:outline-none focus:ring-2 ${
+                  urlTouched && urlError
+                    ? 'border-red-400 focus:border-red-400 focus:ring-red-400/20'
+                    : 'border-slate-200 focus:border-[#0B1AA0] focus:ring-[#0B1AA0]/20'
+                }`}
               />
-              <p className='mt-1.5 text-xs text-slate-400'>
-                We'll load a sample form to demonstrate the import. Live
-                fetching requires a backend proxy.
-              </p>
+              {urlTouched && urlError ? (
+                <p className='mt-1.5 text-xs text-red-500'>{urlError}</p>
+              ) : (
+                <p className='mt-1.5 text-xs text-slate-400'>
+                  We'll load a sample form to demonstrate the import. Live
+                  fetching requires a backend proxy.
+                </p>
+              )}
             </div>
 
             <button

@@ -43,14 +43,6 @@ export function RootLayout() {
           {/* Right actions */}
           <div className='flex items-center gap-3'>
             <NavLink
-              to={ROUTES.SURVEYS_NEW}
-              className='inline-flex items-center gap-1.5 rounded-lg bg-[#0B1AA0] px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-[#0a179a] active:bg-[#091590]'
-            >
-              <Plus className='h-4 w-4' />
-              <span className='hidden sm:inline'>New Survey</span>
-            </NavLink>
-
-            <NavLink
               to={ROUTES.ROOT}
               title='Home'
               className='flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm font-medium text-slate-600 transition-colors hover:bg-slate-50 hover:text-slate-900'

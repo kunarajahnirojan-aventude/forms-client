@@ -14,12 +14,54 @@ const SUBTYPE_LABELS: Record<string, string> = {
 interface TextQuestionProps {
   question: Question;
   isPreview?: boolean;
+  value?: unknown;
+  onAnswer?: (v: unknown) => void;
 }
 
-export function TextQuestion({ question, isPreview }: TextQuestionProps) {
+export function TextQuestion({
+  question,
+  isPreview,
+  value,
+  onAnswer,
+}: TextQuestionProps) {
   const v = question.validation as TextValidation;
   const subtype = v?.subtype ?? 'single_line';
   const isMulti = subtype === 'multi_line';
+  const isRespond = value !== undefined || !!onAnswer;
+
+  const inputType =
+    subtype === 'password'
+      ? 'password'
+      : subtype === 'email'
+        ? 'email'
+        : subtype === 'number'
+          ? 'number'
+          : 'text';
+
+  if (isRespond) {
+    const strVal = typeof value === 'string' ? value : '';
+    return (
+      <div className='mt-3'>
+        {isMulti ? (
+          <textarea
+            value={strVal}
+            onChange={(e) => onAnswer?.(e.target.value)}
+            placeholder='Your answer…'
+            rows={4}
+            className='w-full resize-none rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-700 focus:border-[#0B1AA0] focus:outline-none focus:ring-2 focus:ring-[#0B1AA0]/20'
+          />
+        ) : (
+          <input
+            type={inputType}
+            value={strVal}
+            onChange={(e) => onAnswer?.(e.target.value)}
+            placeholder='Your answer…'
+            className='w-full rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-700 focus:border-[#0B1AA0] focus:outline-none focus:ring-2 focus:ring-[#0B1AA0]/20'
+          />
+        )}
+      </div>
+    );
+  }
 
   if (isPreview) {
     return isMulti ? (
@@ -32,15 +74,7 @@ export function TextQuestion({ question, isPreview }: TextQuestionProps) {
     ) : (
       <input
         disabled
-        type={
-          subtype === 'password'
-            ? 'password'
-            : subtype === 'email'
-              ? 'email'
-              : subtype === 'number'
-                ? 'number'
-                : 'text'
-        }
+        type={inputType}
         placeholder='Your answer…'
         className='w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-500'
       />

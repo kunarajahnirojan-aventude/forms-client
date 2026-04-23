@@ -30,6 +30,8 @@ interface ChoiceQuestionProps {
   onChange?: (updates: Partial<Question>) => void;
   isPreview?: boolean;
   type: 'radio' | 'checkbox' | 'dropdown';
+  value?: unknown;
+  onAnswer?: (v: unknown) => void;
 }
 
 function SortableOption({
@@ -100,9 +102,14 @@ export function ChoiceQuestion({
   onChange,
   isPreview,
   type,
+  value,
+  onAnswer,
 }: ChoiceQuestionProps) {
   const options = question.options ?? [];
   const validation = question.validation as ChoiceValidation;
+  const isRespond = value !== undefined || !!onAnswer;
+  const selectedId = typeof value === 'string' ? value : '';
+  const selectedIds = Array.isArray(value) ? (value as string[]) : [];
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
@@ -138,7 +145,7 @@ export function ChoiceQuestion({
     onChange?.({ options: options.filter((o) => o.id !== id) });
   }
 
-  if (type === 'dropdown' && !isPreview) {
+  if (type === 'dropdown' && !isPreview && !isRespond) {
     return (
       <div className='mt-3 space-y-1'>
         {options.map((opt, i) => (
@@ -175,6 +182,71 @@ export function ChoiceQuestion({
   }
 
   const inputType = type === 'checkbox' ? 'checkbox' : 'radio';
+
+  if (isRespond) {
+    if (type === 'dropdown') {
+      return (
+        <div className='mt-3'>
+          <select
+            value={selectedId}
+            onChange={(e) => onAnswer?.(e.target.value)}
+            className='w-full rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-700 focus:border-[#0B1AA0] focus:outline-none focus:ring-2 focus:ring-[#0B1AA0]/20'
+          >
+            <option value=''>Select an option…</option>
+            {options.map((opt) => (
+              <option key={opt.id} value={opt.id}>
+                {opt.label}
+              </option>
+            ))}
+          </select>
+        </div>
+      );
+    }
+
+    return (
+      <div className='mt-3 space-y-2'>
+        {options.map((opt) => (
+          <label
+            key={opt.id}
+            className='flex cursor-pointer items-center gap-2.5'
+          >
+            <input
+              type={inputType}
+              name={`choice-${question.id}`}
+              value={opt.id}
+              checked={
+                inputType === 'radio'
+                  ? selectedId === opt.id
+                  : selectedIds.includes(opt.id)
+              }
+              onChange={() => {
+                if (inputType === 'radio') {
+                  onAnswer?.(opt.id);
+                } else {
+                  const next = selectedIds.includes(opt.id)
+                    ? selectedIds.filter((id) => id !== opt.id)
+                    : [...selectedIds, opt.id];
+                  onAnswer?.(next);
+                }
+              }}
+              className='h-4 w-4 accent-[#0B1AA0]'
+            />
+            <span className='text-sm text-slate-700'>{opt.label}</span>
+          </label>
+        ))}
+        {validation.allowOther && (
+          <label className='flex cursor-pointer items-center gap-2.5'>
+            <input
+              type={inputType}
+              disabled
+              className='h-4 w-4 accent-[#0B1AA0]'
+            />
+            <span className='text-sm text-slate-400 italic'>Other…</span>
+          </label>
+        )}
+      </div>
+    );
+  }
 
   if (isPreview) {
     return (

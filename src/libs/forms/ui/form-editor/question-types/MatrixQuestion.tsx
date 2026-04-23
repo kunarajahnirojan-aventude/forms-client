@@ -11,17 +11,25 @@ interface MatrixQuestionProps {
   question: Question;
   onChange?: (updates: Partial<Question>) => void;
   isPreview?: boolean;
+  value?: unknown;
+  onAnswer?: (v: unknown) => void;
 }
 
 export function MatrixQuestion({
   question,
   onChange,
   isPreview,
+  value,
+  onAnswer,
 }: MatrixQuestionProps) {
   const rows: MatrixRow[] = question.rows ?? [];
   const cols: MatrixColumn[] = question.columns ?? [];
   const v = question.validation as MatrixValidation;
   const inputType = v?.multiplePerRow ? 'checkbox' : 'radio';
+  const isRespond = value !== undefined || !!onAnswer;
+  const rowValues =
+    (isRespond ? (value as Record<string, string | string[]> | null) : null) ??
+    {};
 
   function addRow() {
     onChange?.({
@@ -119,9 +127,36 @@ export function MatrixQuestion({
                 <td key={col.id} className='py-2 text-center'>
                   <input
                     type={inputType}
-                    disabled={!isPreview}
+                    disabled={!isPreview && !isRespond}
                     name={`matrix-${question.id}-row-${row.id}`}
-                    className='h-4 w-4 accent-blue-600'
+                    value={col.id}
+                    checked={
+                      isRespond
+                        ? inputType === 'radio'
+                          ? rowValues[row.id] === col.id
+                          : Array.isArray(rowValues[row.id])
+                            ? (rowValues[row.id] as string[]).includes(col.id)
+                            : false
+                        : undefined
+                    }
+                    onChange={
+                      isRespond
+                        ? () => {
+                            if (inputType === 'radio') {
+                              onAnswer?.({ ...rowValues, [row.id]: col.id });
+                            } else {
+                              const cur = Array.isArray(rowValues[row.id])
+                                ? (rowValues[row.id] as string[])
+                                : [];
+                              const next = cur.includes(col.id)
+                                ? cur.filter((id) => id !== col.id)
+                                : [...cur, col.id];
+                              onAnswer?.({ ...rowValues, [row.id]: next });
+                            }
+                          }
+                        : undefined
+                    }
+                    className='h-4 w-4 accent-[#0B1AA0]'
                     aria-label={`${row.label} - ${col.label}`}
                   />
                 </td>

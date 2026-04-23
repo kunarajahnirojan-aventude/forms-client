@@ -1,4 +1,10 @@
 // ─────────────────────────────────────────────────────────────────────────────
+// Display mode (rendering engine)
+// ─────────────────────────────────────────────────────────────────────────────
+
+export type DisplayMode = 'page' | 'question' | 'all';
+
+// ─────────────────────────────────────────────────────────────────────────────
 // Question types
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -156,6 +162,7 @@ export interface FormSettings {
   showProgressBar?: boolean;
   allowMultipleSubmissions?: boolean;
   requireSignIn?: boolean;
+  defaultDisplayMode?: DisplayMode;
 }
 
 export type ThemeColor =

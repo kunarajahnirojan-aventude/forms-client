@@ -12,6 +12,9 @@ const SurveysEditPage = lazy(() => import('@/libs/forms/feature/forms-edit'));
 const SurveyPreviewPage = lazy(
   () => import('@/libs/forms/feature/survey-preview'),
 );
+const SurveyRespondPage = lazy(
+  () => import('@/libs/forms/feature/rendering-engine'),
+);
 
 function PageLoader() {
   return (
@@ -39,6 +42,14 @@ export const router = createBrowserRouter([
     element: (
       <Lazy>
         <SurveyPreviewPage />
+      </Lazy>
+    ),
+  },
+  {
+    path: ROUTES.SURVEYS_RESPOND,
+    element: (
+      <Lazy>
+        <SurveyRespondPage />
       </Lazy>
     ),
   },

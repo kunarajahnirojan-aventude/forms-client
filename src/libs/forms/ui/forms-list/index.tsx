@@ -1,11 +1,15 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import type { Form, FormStatus } from '@/libs/forms/store/types';
+import type { ImportPlatform } from '@/libs/forms/feature/importing/importForm';
 import { FormCard } from './FormCard';
 import { EmptyState } from './EmptyState';
 import { FormsSearchBar } from './FormsSearchBar';
 import { StatusFilter } from './StatusFilter';
+import { ImportFormModal } from './ImportFormModal';
 import { ROUTES } from '@/router/routes';
-import { Plus } from 'lucide-react';
+import { surveysEditPath, surveysRespondPath } from '@/router/routes';
+import { Plus, Download } from 'lucide-react';
 
 interface FormsListViewProps {
   forms: Form[];
@@ -17,6 +21,7 @@ interface FormsListViewProps {
   onDuplicate: (id: string) => void;
   onStatusChange: (id: string, status: FormStatus) => void;
   onCopyLink: (shareToken: string) => void;
+  onImport: (platform: ImportPlatform) => Form;
 }
 
 export function FormsListView({
@@ -29,9 +34,11 @@ export function FormsListView({
   onDuplicate,
   onStatusChange,
   onCopyLink,
+  onImport,
 }: FormsListViewProps) {
   const navigate = useNavigate();
   const hasFilters = !!searchQuery || statusFilter !== 'all';
+  const [showImportModal, setShowImportModal] = useState(false);
 
   return (
     <div className='mx-auto max-w-7xl px-4 py-8 sm:px-6'>
@@ -45,13 +52,22 @@ export function FormsListView({
             Create, manage and share your surveys.
           </p>
         </div>
-        <button
-          onClick={() => navigate(ROUTES.SURVEYS_NEW)}
-          className='flex items-center gap-2 rounded-xl bg-[#0B1AA0] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-[#0a179a]'
-        >
-          <Plus className='h-4 w-4' />
-          New Survey
-        </button>
+        <div className='flex items-center gap-3'>
+          <button
+            onClick={() => setShowImportModal(true)}
+            className='flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 shadow-sm transition-colors hover:bg-slate-50'
+          >
+            <Download className='h-4 w-4' />
+            Import
+          </button>
+          <button
+            onClick={() => navigate(ROUTES.SURVEYS_NEW)}
+            className='flex items-center gap-2 rounded-xl bg-[#0B1AA0] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-[#0a179a]'
+          >
+            <Plus className='h-4 w-4' />
+            New Survey
+          </button>
+        </div>
       </div>
 
       {/* Big search */}
@@ -83,6 +99,21 @@ export function FormsListView({
             />
           ))}
         </div>
+      )}
+
+      {showImportModal && (
+        <ImportFormModal
+          onClose={() => setShowImportModal(false)}
+          onImport={onImport}
+          onEdit={(id) => {
+            setShowImportModal(false);
+            navigate(surveysEditPath(id));
+          }}
+          onPreview={(id) => {
+            setShowImportModal(false);
+            navigate(surveysRespondPath(id));
+          }}
+        />
       )}
     </div>
   );

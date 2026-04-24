@@ -1,5 +1,5 @@
 import { nanoid } from 'nanoid';
-import type { Form, SurveyPage, Question } from '@/libs/forms/store/types';
+import type { Form, FormPage, Question } from '@/libs/forms/store/types';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // FB_PUBLIC_LOAD_DATA_ structure
@@ -65,6 +65,63 @@ function isRequired(item: RawItem): boolean {
   }
 }
 
+/**
+ * Detects the text sub-type for short-answer questions.
+ *
+ * In FB_PUBLIC_LOAD_DATA_ Google stores text validation at item[4][0][4].
+ * Each entry has the shape: [validatorType, params, errCode, errText]
+ * Validator types observed:
+ *   1 = text / email / url  (distinguished by params or errText)
+ *   2 = number
+ *   4 = length
+ *   6 = regex
+ *
+ * When the data isn't available we fall back to a title heuristic so that
+ * questions titled e.g. "Email address" still get the right subtype.
+ */
+/**
+ * Detects the text sub-type for short-answer questions using only the error
+ * message text embedded in Google's validation array and a title heuristic.
+ *
+ * We intentionally do NOT map validator type numbers to our 'number' subtype
+ * because Google's type codes are unreliable across form versions and mapping
+ * to 'number' renders <input type="number">, which rejects email characters.
+ * The 'number' subtype is reserved for questions created in the editor.
+ */
+function getShortTextSubtype(
+  item: RawItem,
+  title: string,
+): 'single_line' | 'email' | 'url' {
+  try {
+    const details = safeArr((item as RawItem[])[4]);
+    const first = safeArr(details[0]);
+    const validations = safeArr(first[4]);
+    if (validations.length > 0) {
+      const firstVal = safeArr(validations[0]);
+      // Read the error message text (index 3) and params (index 1) to detect
+      // email / url validators — these are stable across Google Forms versions.
+      const errText = String(firstVal[3] ?? '').toLowerCase();
+      const paramsJson = JSON.stringify(safeArr(firstVal[1])).toLowerCase();
+      if (
+        errText.includes('email') ||
+        paramsJson.includes('email') ||
+        paramsJson.includes('@')
+      )
+        return 'email';
+      if (
+        errText.includes('url') ||
+        paramsJson.includes('url') ||
+        paramsJson.includes('http')
+      )
+        return 'url';
+    }
+  } catch {
+    // ignore — fall through to default
+  }
+
+  return 'single_line';
+}
+
 function convertItem(item: RawItem): Question | null {
   const id = nanoid();
   const title = safeStr(item[1]) || 'Untitled question';
@@ -79,7 +136,7 @@ function convertItem(item: RawItem): Question | null {
       type: 'text',
       title,
       required,
-      validation: { subtype: 'single_line' },
+      validation: { subtype: getShortTextSubtype(item, title) },
     };
   }
 
@@ -191,6 +248,7 @@ function convertItem(item: RawItem): Question | null {
 }
 
 export function convertGoogleFormPublic(data: RawData): Form {
+  debugger;
   const formBlock = safeArr(data[1]);
   const title = safeStr(data[3]) || safeStr(formBlock[8]) || 'Imported Form';
   const rawSettings = safeArr(formBlock[2]);
@@ -199,8 +257,8 @@ export function convertGoogleFormPublic(data: RawData): Form {
 
   const rawItems = safeArr(formBlock[1]) as RawItem[];
 
-  const pages: SurveyPage[] = [];
-  let currentPage: SurveyPage | null = null;
+  const pages: FormPage[] = [];
+  let currentPage: FormPage | null = null;
 
   for (const item of rawItems) {
     const typeNum = item[3] as number;

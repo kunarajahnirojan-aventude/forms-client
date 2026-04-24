@@ -8,7 +8,7 @@ import { FormsSearchBar } from './FormsSearchBar';
 import { StatusFilter } from './StatusFilter';
 import { ImportFormModal } from './ImportFormModal';
 import { ROUTES } from '@/router/routes';
-import { surveysEditPath, surveysRespondPath } from '@/router/routes';
+import { formsEditPath, formsRespondPath } from '@/router/routes';
 import { Plus, Download } from 'lucide-react';
 
 interface FormsListViewProps {
@@ -61,7 +61,7 @@ export function FormsListView({
             Import
           </button>
           <button
-            onClick={() => navigate(ROUTES.SURVEYS_NEW)}
+            onClick={() => navigate(ROUTES.FORMS_NEW)}
             className='flex items-center gap-2 rounded-xl bg-[#0B1AA0] px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-[#0a179a]'
           >
             <Plus className='h-4 w-4' />
@@ -107,11 +107,11 @@ export function FormsListView({
           onImport={onImport}
           onEdit={(id) => {
             setShowImportModal(false);
-            navigate(surveysEditPath(id));
+            navigate(formsEditPath(id));
           }}
           onPreview={(id) => {
             setShowImportModal(false);
-            navigate(surveysRespondPath(id));
+            navigate(formsRespondPath(id));
           }}
         />
       )}

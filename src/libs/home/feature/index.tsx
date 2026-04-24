@@ -26,7 +26,7 @@ export default function LandingPage() {
         <div className='mt-12 grid w-full grid-cols-1 gap-5 sm:grid-cols-2'>
           {/* Surveys card */}
           <button
-            onClick={() => navigate(ROUTES.SURVEYS)}
+            onClick={() => navigate(ROUTES.FORMS)}
             className='group relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-7 text-left shadow-sm transition-all duration-300 hover:border-[#0B1AA0]/30 hover:shadow-lg'
           >
             <div className='mb-5 flex h-12 w-12 items-center justify-center rounded-xl bg-[#0B1AA0]/10 ring-1 ring-[#0B1AA0]/20 transition-colors group-hover:bg-[#0B1AA0]/15'>

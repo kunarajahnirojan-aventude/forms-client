@@ -1,4 +1,5 @@
 import type { Question } from '@/libs/forms/store/types';
+import { AlertCircle } from 'lucide-react';
 import { TextQuestion } from '@/libs/forms/ui/form-editor/question-types/TextQuestion';
 import { ChoiceQuestion } from '@/libs/forms/ui/form-editor/question-types/ChoiceQuestion';
 import { DateQuestion } from '@/libs/forms/ui/form-editor/question-types/DateQuestion';
@@ -73,6 +74,7 @@ interface QuestionBlockProps {
   onAnswer: (qId: string, v: unknown) => void;
   /** 0-based index among answerable (non-section) questions, for display numbering */
   index?: number;
+  error?: string;
 }
 
 export function QuestionBlock({
@@ -80,13 +82,18 @@ export function QuestionBlock({
   value,
   onAnswer,
   index,
+  error,
 }: QuestionBlockProps) {
   if (question.type === 'section') {
     return <SectionDivider question={question} />;
   }
 
   return (
-    <div className='rounded-xl border border-slate-200 bg-white p-5 shadow-sm'>
+    <div
+      className={`rounded-xl border p-5 shadow-sm transition-colors ${
+        error ? 'border-red-300 bg-red-50/40' : 'border-slate-200 bg-white'
+      }`}
+    >
       {index !== undefined && (
         <span className='mb-1 inline-block text-xs font-semibold text-[#0B1AA0]/50'>
           Q{index + 1}
@@ -104,6 +111,12 @@ export function QuestionBlock({
         value={value}
         onAnswer={(v) => onAnswer(question.id, v)}
       />
+      {error && (
+        <div className='mt-2.5 flex items-center gap-1.5 text-xs font-medium text-red-500'>
+          <AlertCircle className='h-3.5 w-3.5 shrink-0' />
+          {error}
+        </div>
+      )}
     </div>
   );
 }

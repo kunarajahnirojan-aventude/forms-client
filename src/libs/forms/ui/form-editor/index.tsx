@@ -18,9 +18,9 @@ import { SettingsPanel } from './SettingsPanel';
 import { ThemePanel } from './ThemePanel';
 import { PagesSidebar } from './PagesSidebar';
 import { cn } from '@/utils';
-import { ROUTES, surveysPreviewPath } from '@/router/routes';
+import { ROUTES, formsPreviewPath } from '@/router/routes';
 
-export function SurveyEditorView() {
+export function FormEditorView() {
   const navigate = useNavigate();
   const editor = useFormEditor_();
 
@@ -91,7 +91,7 @@ export function SurveyEditorView() {
       {/* ── Top toolbar ──────────────────────────────────────────────────── */}
       <div className='flex items-center gap-3 border-b border-slate-200 bg-white px-4 py-2.5'>
         <button
-          onClick={() => navigate(ROUTES.SURVEYS)}
+          onClick={() => navigate(ROUTES.FORMS)}
           className='flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-sm text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-700'
         >
           <ChevronLeft className='h-4 w-4' />
@@ -187,9 +187,7 @@ export function SurveyEditorView() {
         <div className='h-5 w-px bg-slate-200' />
 
         <button
-          onClick={() =>
-            window.open(surveysPreviewPath(activeForm.id), '_blank')
-          }
+          onClick={() => window.open(formsPreviewPath(activeForm.id), '_blank')}
           className='flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 transition-colors hover:border-slate-300 hover:bg-slate-50'
         >
           <Eye className='h-4 w-4' />

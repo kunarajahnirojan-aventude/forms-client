@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { nanoid } from 'nanoid';
 import { useFormsStore, useFormEditor } from '@/store';
 import { FormSetupView } from '@/libs/forms/ui/form-setup/FormSetupView';
-import { surveysEditPath } from '@/router/routes';
+import { formsEditPath } from '@/router/routes';
 import type { Form } from '@/libs/forms/store/types';
 
 export default function SurveysCreatePage() {
@@ -39,7 +39,7 @@ export default function SurveysCreatePage() {
     };
     addForm(newForm);
     openEditor(id);
-    navigate(surveysEditPath(id), { replace: true });
+    navigate(formsEditPath(id), { replace: true });
   }
 
   return <FormSetupView onSubmit={handleSetupSubmit} />;

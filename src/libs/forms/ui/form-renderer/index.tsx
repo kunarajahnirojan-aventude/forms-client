@@ -77,8 +77,8 @@ export function FormRenderer({ form }: FormRendererProps) {
   const gradient = GRADIENT_MAP[form.theme.color] ?? GRADIENT_MAP.blue;
 
   function handleSubmit() {
-    engine.submit();
-    setShowConfetti(true);
+    const ok = engine.submit();
+    if (ok) setShowConfetti(true);
   }
 
   useEffect(() => {

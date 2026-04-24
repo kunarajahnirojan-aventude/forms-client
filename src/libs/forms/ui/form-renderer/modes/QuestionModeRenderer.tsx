@@ -21,6 +21,7 @@ export function QuestionModeRenderer({
     allQuestions,
     currentAnswerableIndex,
     answers,
+    errors,
     setAnswer,
     canGoBack,
     canGoNext,
@@ -46,6 +47,7 @@ export function QuestionModeRenderer({
         value={answers[currentQuestion.id]}
         onAnswer={setAnswer}
         index={currentAnswerableIndex >= 0 ? currentAnswerableIndex : undefined}
+        error={errors[currentQuestion.id]}
       />
 
       <NavigationButtons

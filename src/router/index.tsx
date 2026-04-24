@@ -4,15 +4,13 @@ import { RootLayout } from '@/layouts/RootLayout';
 import { ROUTES } from './routes';
 
 const LandingPage = lazy(() => import('@/libs/home/feature'));
-const SurveysListPage = lazy(() => import('@/libs/forms/feature/forms-list'));
-const SurveysCreatePage = lazy(
-  () => import('@/libs/forms/feature/forms-create'),
-);
-const SurveysEditPage = lazy(() => import('@/libs/forms/feature/forms-edit'));
-const SurveyPreviewPage = lazy(
+const FormsListPage = lazy(() => import('@/libs/forms/feature/forms-list'));
+const FormsCreatePage = lazy(() => import('@/libs/forms/feature/forms-create'));
+const FormsEditPage = lazy(() => import('@/libs/forms/feature/forms-edit'));
+const FormPreviewPage = lazy(
   () => import('@/libs/forms/feature/survey-preview'),
 );
-const SurveyRespondPage = lazy(
+const FormRespondPage = lazy(
   () => import('@/libs/forms/feature/rendering-engine'),
 );
 
@@ -38,18 +36,18 @@ export const router = createBrowserRouter([
     ),
   },
   {
-    path: ROUTES.SURVEYS_PREVIEW,
+    path: ROUTES.FORMS_PREVIEW,
     element: (
       <Lazy>
-        <SurveyPreviewPage />
+        <FormPreviewPage />
       </Lazy>
     ),
   },
   {
-    path: ROUTES.SURVEYS_RESPOND,
+    path: ROUTES.FORMS_RESPOND,
     element: (
       <Lazy>
-        <SurveyRespondPage />
+        <FormRespondPage />
       </Lazy>
     ),
   },
@@ -57,26 +55,26 @@ export const router = createBrowserRouter([
     element: <RootLayout />,
     children: [
       {
-        path: ROUTES.SURVEYS,
+        path: ROUTES.FORMS,
         element: (
           <Lazy>
-            <SurveysListPage />
+            <FormsListPage />
           </Lazy>
         ),
       },
       {
-        path: ROUTES.SURVEYS_NEW,
+        path: ROUTES.FORMS_NEW,
         element: (
           <Lazy>
-            <SurveysCreatePage />
+            <FormsCreatePage />
           </Lazy>
         ),
       },
       {
-        path: ROUTES.SURVEYS_EDIT,
+        path: ROUTES.FORMS_EDIT,
         element: (
           <Lazy>
-            <SurveysEditPage />
+            <FormsEditPage />
           </Lazy>
         ),
       },

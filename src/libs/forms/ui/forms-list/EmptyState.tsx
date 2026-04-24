@@ -24,7 +24,7 @@ export function EmptyState({ hasFilters }: EmptyStateProps) {
       </p>
       {!hasFilters && (
         <button
-          onClick={() => navigate(ROUTES.SURVEYS_NEW)}
+          onClick={() => navigate(ROUTES.FORMS_NEW)}
           className='mt-6 inline-flex items-center gap-2 rounded-lg bg-[#0B1AA0] px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-[#0a179a]'
         >
           <Plus className='h-4 w-4' />

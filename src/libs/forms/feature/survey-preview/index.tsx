@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
   ChevronLeft,
@@ -7,9 +7,10 @@ import {
   CheckCircle2,
   ArrowLeft,
   Sparkles,
+  AlertCircle,
 } from 'lucide-react';
 import { useFormsStore } from '@/store';
-import { surveysEditPath } from '@/router/routes';
+import { formsEditPath } from '@/router/routes';
 import { TextQuestion } from '@/libs/forms/ui/form-editor/question-types/TextQuestion';
 import { ChoiceQuestion } from '@/libs/forms/ui/form-editor/question-types/ChoiceQuestion';
 import { DateQuestion } from '@/libs/forms/ui/form-editor/question-types/DateQuestion';
@@ -20,7 +21,12 @@ import { FileQuestion } from '@/libs/forms/ui/form-editor/question-types/FileQue
 import { YesNoQuestion } from '@/libs/forms/ui/form-editor/question-types/YesNoQuestion';
 import { MatrixQuestion } from '@/libs/forms/ui/form-editor/question-types/MatrixQuestion';
 import { PhoneQuestion } from '@/libs/forms/ui/form-editor/question-types/PhoneQuestion';
-import type { Question } from '@/libs/forms/store/types';
+import type {
+  Question,
+  TextValidation,
+  ChoiceValidation,
+  MatrixValidation,
+} from '@/libs/forms/store/types';
 import { cn } from '@/utils';
 
 /* ── theme gradients ───────────────────────────────────────────────────── */
@@ -35,8 +41,16 @@ const GRADIENT_MAP: Record<string, string> = {
 };
 
 /* ── question renderer ─────────────────────────────────────────────────── */
-function QuestionBody({ question }: { question: Question }) {
-  const props = { question, isPreview: true };
+function QuestionBody({
+  question,
+  value,
+  onAnswer,
+}: {
+  question: Question;
+  value: unknown;
+  onAnswer: (v: unknown) => void;
+}) {
+  const props = { question, value, onAnswer };
   switch (question.type) {
     case 'text':
       return <TextQuestion {...props} />;
@@ -119,10 +133,122 @@ export default function SurveyPreviewPage() {
   const navigate = useNavigate();
   const { forms } = useFormsStore();
 
-  // -1 = intro, 0..n-1 = survey pages, 'done' = congratulations
+  // -1 = intro, 0..n-1 = form pages, 'done' = congratulations
   const [step, setStep] = useState<number | 'done'>(-1);
   const [showConfetti, setShowConfetti] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
+
+  // ── Answer + validation state ────────────────────────────────────────────
+  const [answers, setAnswers] = useState<Record<string, unknown>>({});
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
+  // Flat list of all questions for lookup
+  const allPreviewQuestions = useMemo(
+    () => form?.pages.flatMap((p) => p.questions) ?? [],
+    [form],
+  );
+
+  function setAnswer(qId: string, value: unknown) {
+    setAnswers((prev) => ({ ...prev, [qId]: value }));
+    // Only clear the error once the new value is actually valid
+    setErrors((prev) => {
+      if (!prev[qId]) return prev;
+      const question = allPreviewQuestions.find((q) => q.id === qId);
+      if (!question) return prev;
+      const stillInvalid = getQuestionError(question, value);
+      if (stillInvalid) return prev;
+      const updated = { ...prev };
+      delete updated[qId];
+      return updated;
+    });
+  }
+
+  function getQuestionError(q: Question, val: unknown): string | null {
+    if (q.type === 'section') return null;
+
+    // ── Required check ───────────────────────────────────────────────────
+    if (q.required) {
+      if (q.type === 'text') {
+        if (typeof val !== 'string' || val.trim() === '')
+          return 'This field is required.';
+      } else if (q.type === 'phone') {
+        if (typeof val !== 'string' || val.trim() === '')
+          return 'This field is required.';
+      } else if (
+        q.type === 'radio' ||
+        q.type === 'dropdown' ||
+        q.type === 'yes_no'
+      ) {
+        if (typeof val !== 'string' || val === '')
+          return 'Please select an option.';
+      } else if (q.type === 'checkbox') {
+        if (!Array.isArray(val) || val.length === 0)
+          return 'Please select at least one option.';
+      } else if (q.type === 'date') {
+        if (typeof val !== 'string' || val === '')
+          return 'Please select a date.';
+      } else if (q.type === 'rating' || q.type === 'linear_scale') {
+        if (typeof val !== 'number') return 'Please provide a rating.';
+      } else if (q.type === 'matrix') {
+        const mv = q.validation as MatrixValidation;
+        const rows = q.rows ?? [];
+        const rv = (val ?? {}) as Record<string, unknown>;
+        const hasGap = rows.some((r) => {
+          const cell = rv[r.id];
+          return (
+            cell === undefined ||
+            cell === null ||
+            (Array.isArray(cell) && cell.length === 0) ||
+            (mv?.multiplePerRow === false && typeof cell !== 'string')
+          );
+        });
+        if (hasGap) return 'Please answer all rows.';
+      } else if (q.type === 'file_upload') {
+        if (!val) return 'Please upload a file.';
+      }
+    }
+
+    // ── Format validation (even when not required, if a value was entered) ─
+    if (q.type === 'text' && typeof val === 'string' && val.trim() !== '') {
+      const tv = q.validation as TextValidation;
+      if (
+        tv?.subtype === 'email' &&
+        !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val.trim())
+      )
+        return 'Please enter a valid email address.';
+      if (tv?.subtype === 'url') {
+        try {
+          new URL(val.trim());
+        } catch {
+          return 'Please enter a valid URL (e.g. https://…).';
+        }
+      }
+      if (tv?.subtype === 'number' && (val.trim() === '' || isNaN(Number(val))))
+        return 'Please enter a valid number.';
+      if (tv?.maxLength && val.length > tv.maxLength)
+        return `Maximum ${tv.maxLength} characters allowed.`;
+    }
+
+    // ── Checkbox min / max selections ────────────────────────────────────
+    if (q.type === 'checkbox' && Array.isArray(val) && val.length > 0) {
+      const cv = q.validation as ChoiceValidation;
+      if (cv?.minSelections && val.length < cv.minSelections)
+        return `Please select at least ${cv.minSelections} option${cv.minSelections > 1 ? 's' : ''}.`;
+      if (cv?.maxSelections && val.length > cv.maxSelections)
+        return `Please select no more than ${cv.maxSelections} option${cv.maxSelections > 1 ? 's' : ''}.`;
+    }
+
+    return null;
+  }
+
+  function validatePage(questions: Question[]): Record<string, string> {
+    const errs: Record<string, string> = {};
+    for (const q of questions) {
+      const err = getQuestionError(q, answers[q.id]);
+      if (err) errs[q.id] = err;
+    }
+    return errs;
+  }
 
   const survey = forms.find((f) => f.id === id);
 
@@ -158,7 +284,27 @@ export default function SurveyPreviewPage() {
     0,
   );
 
+  function handleNext() {
+    if (!currentPage) return;
+    const errs = validatePage(currentPage.questions);
+    if (Object.keys(errs).length > 0) {
+      setErrors(errs);
+      cardRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+    setErrors({});
+    setStep((i) => (typeof i === 'number' ? i + 1 : i));
+  }
+
   function handleSubmit() {
+    if (!currentPage) return;
+    const errs = validatePage(currentPage.questions);
+    if (Object.keys(errs).length > 0) {
+      setErrors(errs);
+      cardRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+    setErrors({});
     setStep('done');
     setShowConfetti(true);
   }
@@ -170,7 +316,7 @@ export default function SurveyPreviewPage() {
       {/* ── Preview banner ─────────────────────────────────────────── */}
       <div className='sticky top-0 z-20 flex items-center justify-between border-b border-amber-200/60 bg-amber-50/95 px-4 py-2 backdrop-blur-sm'>
         <button
-          onClick={() => navigate(surveysEditPath(id!))}
+          onClick={() => navigate(formsEditPath(id!))}
           className='flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-sm font-medium text-amber-700 transition-colors hover:bg-amber-100 hover:text-amber-900'
         >
           <ArrowLeft className='h-3.5 w-3.5' />
@@ -263,13 +409,15 @@ export default function SurveyPreviewPage() {
                   onClick={() => {
                     setStep(-1);
                     setShowConfetti(false);
+                    setAnswers({});
+                    setErrors({});
                   }}
                   className='rounded-xl border border-slate-200 px-5 py-2.5 text-sm font-semibold text-slate-600 transition-colors hover:border-slate-300 hover:bg-slate-50'
                 >
                   ↩ Start Over
                 </button>
                 <button
-                  onClick={() => navigate(surveysEditPath(id!))}
+                  onClick={() => navigate(formsEditPath(id!))}
                   className={cn(
                     'flex items-center gap-2 rounded-xl px-6 py-2.5 text-sm font-bold text-white shadow-md transition-all hover:brightness-110',
                     `bg-gradient-to-r ${gradient}`,
@@ -393,16 +541,24 @@ export default function SurveyPreviewPage() {
                           </div>
                         );
                       }
+                      const hasError = !!errors[q.id];
                       return (
                         <div
                           key={q.id}
-                          className='rounded-xl border border-slate-100 bg-slate-50/60 p-5 transition-shadow hover:shadow-sm'
+                          className={cn(
+                            'rounded-xl border p-5 transition-all',
+                            hasError
+                              ? 'border-red-300 bg-red-50/40 shadow-sm'
+                              : 'border-slate-100 bg-slate-50/60 hover:shadow-sm',
+                          )}
                         >
                           <div className='mb-3.5 flex items-start gap-3'>
                             <span
                               className={cn(
                                 'flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[11px] font-bold text-white',
-                                `bg-gradient-to-br ${gradient}`,
+                                hasError
+                                  ? 'bg-red-400'
+                                  : `bg-gradient-to-br ${gradient}`,
                               )}
                             >
                               {idx + 1}
@@ -422,8 +578,18 @@ export default function SurveyPreviewPage() {
                             </div>
                           </div>
                           <div className='pl-9'>
-                            <QuestionBody question={q} />
+                            <QuestionBody
+                              question={q}
+                              value={answers[q.id]}
+                              onAnswer={(v) => setAnswer(q.id, v)}
+                            />
                           </div>
+                          {hasError && (
+                            <div className='mt-2.5 flex items-center gap-1.5 pl-9 text-xs font-medium text-red-500'>
+                              <AlertCircle className='h-3.5 w-3.5 shrink-0' />
+                              {errors[q.id]}
+                            </div>
+                          )}
                         </div>
                       );
                     })}
@@ -451,14 +617,12 @@ export default function SurveyPreviewPage() {
                       `bg-gradient-to-r ${gradient}`,
                     )}
                   >
-                    Submit Survey
+                    Submit Form
                     <CheckCircle2 className='h-4 w-4' />
                   </button>
                 ) : (
                   <button
-                    onClick={() =>
-                      setStep((i) => (typeof i === 'number' ? i + 1 : i))
-                    }
+                    onClick={handleNext}
                     className={cn(
                       'flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-bold text-white shadow-sm transition-all hover:brightness-110',
                       `bg-gradient-to-r ${gradient}`,

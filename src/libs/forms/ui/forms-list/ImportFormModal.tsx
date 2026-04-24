@@ -1,71 +1,24 @@
 import { useState, useEffect, useRef } from 'react';
-import { X, ArrowLeft, Check, ExternalLink } from 'lucide-react';
+import { X, Check } from 'lucide-react';
 import type { Form } from '@/libs/forms/store/types';
 import type { ImportPlatform } from '@/libs/forms/feature/importing/importForm';
 
-// ── Platform definitions ──────────────────────────────────────────────────────
-
-const PLATFORMS: {
-  id: ImportPlatform;
-  name: string;
-  tagline: string;
-  color: string;
-  bg: string;
-  initial: string;
-}[] = [
-  {
-    id: 'google',
-    name: 'Google Forms',
-    tagline: 'Import from Google Forms',
-    color: 'text-blue-600',
-    bg: 'bg-blue-50 border-blue-200',
-    initial: 'G',
-  },
-  {
-    id: 'microsoft',
-    name: 'Microsoft Forms',
-    tagline: 'Import from Microsoft Forms',
-    color: 'text-indigo-600',
-    bg: 'bg-indigo-50 border-indigo-200',
-    initial: 'M',
-  },
-  {
-    id: 'surveymonkey',
-    name: 'Survey Monkey',
-    tagline: 'Import from Survey Monkey',
-    color: 'text-emerald-600',
-    bg: 'bg-emerald-50 border-emerald-200',
-    initial: 'S',
-  },
-];
-
 // ── URL validation ───────────────────────────────────────────────────────────
 
-const URL_PATTERNS: Record<ImportPlatform, { pattern: RegExp; hint: string }> =
-  {
-    google: {
-      pattern: /^https:\/\/(docs\.google\.com\/forms\/|forms\.gle\/).+/i,
-      hint: 'Must start with https://docs.google.com/forms/ or https://forms.gle/',
-    },
-    microsoft: {
-      pattern: /^https:\/\/(forms\.office\.com|forms\.microsoft\.com)\/.+/i,
-      hint: 'Must start with https://forms.office.com/ or https://forms.microsoft.com/',
-    },
-    surveymonkey: {
-      pattern: /^https:\/\/(www\.)?surveymonkey\.(com|co\.uk)\/.+/i,
-      hint: 'Must start with https://www.surveymonkey.com/',
-    },
-  };
+const GOOGLE_URL_PATTERN =
+  /^https:\/\/(docs\.google\.com\/forms\/|forms\.gle\/).+/i;
+const GOOGLE_URL_HINT =
+  'Must start with https://docs.google.com/forms/ or https://forms.gle/';
 
-function validateUrl(url: string, platform: ImportPlatform): string | null {
+function validateUrl(url: string): string | null {
   if (!url.trim()) return 'Please enter a URL.';
   try {
     new URL(url);
   } catch {
     return 'Please enter a valid URL (e.g. https://…).';
   }
-  if (!URL_PATTERNS[platform].pattern.test(url)) {
-    return URL_PATTERNS[platform].hint;
+  if (!GOOGLE_URL_PATTERN.test(url)) {
+    return GOOGLE_URL_HINT;
   }
   return null;
 }
@@ -93,8 +46,7 @@ export function ImportFormModal({
   onEdit,
   onPreview,
 }: ImportFormModalProps) {
-  const [step, setStep] = useState<1 | 2 | 3>(1);
-  const [platform, setPlatform] = useState<ImportPlatform | null>(null);
+  const [step, setStep] = useState<1 | 2>(1);
   const [url, setUrl] = useState('');
   const [urlError, setUrlError] = useState<string | null>(null);
   const [urlTouched, setUrlTouched] = useState(false);
@@ -119,25 +71,16 @@ export function ImportFormModal({
     return () => window.removeEventListener('keydown', handleKey);
   }, [onClose]);
 
-  function handleSelectPlatform(p: ImportPlatform) {
-    setPlatform(p);
-    setUrl('');
-    setUrlError(null);
-    setUrlTouched(false);
-    setStep(2);
-  }
-
-  async function handleLoadSample() {
-    if (!platform) return;
-    const error = validateUrl(url, platform);
+  async function handleImport() {
+    const error = validateUrl(url);
     setUrlTouched(true);
     setUrlError(error);
     if (error) return;
     setLoading(true);
     try {
-      const form = await onImport(platform, url);
+      const form = await onImport('google', url);
       setImportedForm(form);
-      setStep(3);
+      setStep(2);
     } catch (err) {
       setUrlError(
         err instanceof Error ? err.message : 'Import failed. Please try again.',
@@ -147,7 +90,6 @@ export function ImportFormModal({
     }
   }
 
-  const selectedPlatform = PLATFORMS.find((p) => p.id === platform);
   const totalQuestions = importedForm?.pages.reduce(
     (sum, page) =>
       sum + page.questions.filter((q) => q.type !== 'section').length,
@@ -173,58 +115,16 @@ export function ImportFormModal({
           <X className='h-5 w-5' />
         </button>
 
-        {/* ── Step 1: Platform picker ────────────────────────────────────── */}
+        {/* ── Step 1: URL input ─────────────────────────────────────────── */}
         {step === 1 && (
           <div className='p-8'>
-            <h2 className='text-xl font-bold text-slate-900'>Import a Form</h2>
-            <p className='mt-1.5 text-sm text-slate-500'>
-              Choose the platform you want to import from. We'll load a sample
-              form for you.
-            </p>
-
-            <div className='mt-6 space-y-3'>
-              {PLATFORMS.map((p) => (
-                <button
-                  key={p.id}
-                  onClick={() => handleSelectPlatform(p.id)}
-                  className={`flex w-full items-center gap-4 rounded-xl border-2 px-4 py-4 text-left transition-all hover:shadow-sm ${p.bg} hover:border-current`}
-                >
-                  <div
-                    className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border-2 ${p.bg} ${p.color} text-lg font-bold`}
-                  >
-                    {p.initial}
-                  </div>
-                  <div>
-                    <p className={`font-semibold ${p.color}`}>{p.name}</p>
-                    <p className='text-xs text-slate-500'>{p.tagline}</p>
-                  </div>
-                  <ExternalLink className='ml-auto h-4 w-4 text-slate-300' />
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* ── Step 2: URL input ──────────────────────────────────────────── */}
-        {step === 2 && selectedPlatform && (
-          <div className='p-8'>
-            <button
-              onClick={() => setStep(1)}
-              className='mb-5 flex items-center gap-1.5 text-sm text-slate-500 hover:text-slate-700'
-            >
-              <ArrowLeft className='h-4 w-4' />
-              Back
-            </button>
-
-            <div className={`mb-5 flex items-center gap-3`}>
-              <div
-                className={`flex h-10 w-10 items-center justify-center rounded-lg border-2 ${selectedPlatform.bg} ${selectedPlatform.color} text-lg font-bold`}
-              >
-                {selectedPlatform.initial}
+            <div className='mb-5 flex items-center gap-3'>
+              <div className='flex h-10 w-10 items-center justify-center rounded-lg border-2 bg-blue-50 border-blue-200 text-lg font-bold text-blue-600'>
+                G
               </div>
               <div>
                 <h2 className='text-lg font-bold text-slate-900'>
-                  {selectedPlatform.name}
+                  Import from Google Forms
                 </h2>
                 <p className='text-xs text-slate-500'>
                   Paste your form link below
@@ -241,21 +141,13 @@ export function ImportFormModal({
                 value={url}
                 onChange={(e) => {
                   setUrl(e.target.value);
-                  if (urlTouched) {
-                    setUrlError(validateUrl(e.target.value, platform!));
-                  }
+                  if (urlTouched) setUrlError(validateUrl(e.target.value));
                 }}
                 onBlur={() => {
                   setUrlTouched(true);
-                  setUrlError(validateUrl(url, platform!));
+                  setUrlError(validateUrl(url));
                 }}
-                placeholder={
-                  platform === 'google'
-                    ? 'https://docs.google.com/forms/d/…/viewform'
-                    : platform === 'microsoft'
-                      ? 'https://forms.office.com/r/…'
-                      : 'https://www.surveymonkey.com/r/…'
-                }
+                placeholder='https://docs.google.com/forms/d/…/viewform'
                 className={`w-full rounded-lg border px-3 py-2 text-sm text-slate-700 focus:outline-none focus:ring-2 ${
                   urlTouched && urlError
                     ? 'border-red-400 focus:border-red-400 focus:ring-red-400/20'
@@ -266,15 +158,13 @@ export function ImportFormModal({
                 <p className='mt-1.5 text-xs text-red-500'>{urlError}</p>
               ) : (
                 <p className='mt-1.5 text-xs text-slate-400'>
-                  Paste the URL of a public form (sign-in not required). For
-                  Microsoft &amp; SurveyMonkey a sample is loaded until OAuth is
-                  set up.
+                  Paste the URL of a public Google Form (sign-in not required).
                 </p>
               )}
             </div>
 
             <button
-              onClick={handleLoadSample}
+              onClick={handleImport}
               disabled={loading}
               className='w-full rounded-lg bg-[#0B1AA0] py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#0a179a] disabled:opacity-60'
             >
@@ -283,8 +173,8 @@ export function ImportFormModal({
           </div>
         )}
 
-        {/* ── Step 3: Success summary ────────────────────────────────────── */}
-        {step === 3 && importedForm && (
+        {/* ── Step 2: Success summary ────────────────────────────────────── */}
+        {step === 2 && importedForm && (
           <div className='p-8'>
             <div className='mb-5 flex items-center gap-2 text-emerald-600'>
               <div className='flex h-8 w-8 items-center justify-center rounded-full bg-emerald-100'>

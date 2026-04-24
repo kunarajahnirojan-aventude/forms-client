@@ -14,7 +14,7 @@ export function AllModeRenderer({
   engine,
   onSubmit,
 }: AllModeRendererProps) {
-  const { answers, setAnswer } = engine;
+  const { answers, setAnswer, errors } = engine;
 
   let answerableCount = 0;
 
@@ -48,6 +48,7 @@ export function AllModeRenderer({
                     value={answers[q.id]}
                     onAnswer={setAnswer}
                     index={idx}
+                    error={errors[q.id]}
                   />
                 );
               })}

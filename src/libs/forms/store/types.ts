@@ -186,7 +186,7 @@ export interface FormTheme {
 // Survey Page
 // ─────────────────────────────────────────────────────────────────────────────
 
-export interface SurveyPage {
+export interface FormPage {
   id: string;
   title: string;
   description?: string;
@@ -204,7 +204,7 @@ export interface Form {
   title: string;
   description?: string;
   status: FormStatus;
-  pages: SurveyPage[];
+  pages: FormPage[];
   settings: FormSettings;
   theme: FormTheme;
   responseCount: number;
@@ -220,7 +220,7 @@ export interface Form {
 export interface EditorSnapshot {
   title: string;
   description?: string;
-  pages: SurveyPage[];
+  pages: FormPage[];
   settings: FormSettings;
   theme: FormTheme;
 }

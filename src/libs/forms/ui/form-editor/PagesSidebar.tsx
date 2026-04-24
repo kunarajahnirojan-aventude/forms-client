@@ -1,15 +1,15 @@
 import { useState } from 'react';
 import { Plus, Trash2, GripVertical } from 'lucide-react';
-import type { SurveyPage } from '@/libs/forms/store/types';
+import type { FormPage } from '@/libs/forms/store/types';
 import { cn } from '@/utils';
 
 interface PagesSidebarProps {
-  pages: SurveyPage[];
+  pages: FormPage[];
   activePageId: string | null;
   onSelectPage: (id: string) => void;
   onAddPage: () => void;
   onDeletePage: (id: string) => void;
-  onUpdatePage: (id: string, patch: Partial<SurveyPage>) => void;
+  onUpdatePage: (id: string, patch: Partial<FormPage>) => void;
 }
 
 export function PagesSidebar({
@@ -23,7 +23,7 @@ export function PagesSidebar({
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editValue, setEditValue] = useState('');
 
-  function startEdit(page: SurveyPage) {
+  function startEdit(page: FormPage) {
     setEditingId(page.id);
     setEditValue(page.title);
   }

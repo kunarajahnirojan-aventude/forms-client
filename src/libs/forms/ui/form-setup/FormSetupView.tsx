@@ -25,7 +25,7 @@ export function FormSetupView({ onSubmit }: FormSetupViewProps) {
       <div className='flex items-center justify-between border-b border-slate-100 bg-white px-6 py-3 shadow-sm'>
         <button
           type='button'
-          onClick={() => navigate(ROUTES.SURVEYS)}
+          onClick={() => navigate(ROUTES.FORMS)}
           className='flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-sm font-medium text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-700'
         >
           <ChevronLeft className='h-4 w-4' />

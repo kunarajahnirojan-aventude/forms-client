@@ -19,6 +19,7 @@ export function PageModeRenderer({
     currentPage,
     currentPageIndex,
     answers,
+    errors,
     setAnswer,
     canGoBack,
     canGoNext,
@@ -67,6 +68,7 @@ export function PageModeRenderer({
               value={answers[q.id]}
               onAnswer={setAnswer}
               index={idx}
+              error={errors[q.id]}
             />
           );
         })}

@@ -8,7 +8,7 @@ import type {
   QuestionValidation,
   EditorSnapshot,
   ChoiceOption,
-  SurveyPage,
+  FormPage,
 } from '@/libs/forms/store/types';
 
 function defaultValidation(type: QuestionType): QuestionValidation {
@@ -230,7 +230,7 @@ export function useFormEditor_() {
     if (!activeFormId || !activeForm) return;
     const snap = buildSnapshot(forms, activeFormId);
     if (snap) pushUndoSnapshot(snap);
-    const newPage: SurveyPage = {
+    const newPage: FormPage = {
       id: nanoid(),
       title: `Page ${activeForm.pages.length + 1}`,
       questions: [],
@@ -247,7 +247,7 @@ export function useFormEditor_() {
   ]);
 
   const updatePage = useCallback(
-    (pageId: string, patch: Partial<SurveyPage>) => {
+    (pageId: string, patch: Partial<FormPage>) => {
       if (!activeFormId || !activeForm) return;
       updateForm(activeFormId, {
         pages: activeForm.pages.map((p) =>

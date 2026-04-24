@@ -1,7 +1,7 @@
 import type { Form, DisplayMode } from '@/libs/forms/store/types';
-import { resolveInitialMode } from '@/libs/forms/feature/rendering-engine/resolveInitialMode';
-import { fetchGoogleFormData } from './fetchGoogleFormHtml';
-import { convertGoogleFormPublic } from './converters/googleFormsPublic';
+import { resolveInitialMode } from '@/libs/forms/hooks/use-rendering-engine/resolveInitialMode';
+import { fetchGoogleFormData } from '@/libs/forms/hooks/google-fetcher';
+import { convertGoogleFormPublic } from '@/libs/forms/hooks/google-converter';
 
 export type ImportPlatform = 'google';
 

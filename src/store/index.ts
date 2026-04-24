@@ -2,10 +2,10 @@ import { create } from 'zustand';
 import { useShallow } from 'zustand/react/shallow';
 import { devtools, persist } from 'zustand/middleware';
 import type { AppState } from '@/store/types';
-import { createAuthSlice } from '@/store/features/auth.slice';
-import { createUISlice } from '@/store/features/ui.slice';
-import { createFormsSlice } from '@/libs/forms/store/forms.slice';
-import { createFormEditorSlice } from '@/libs/forms/store/form-editor.slice';
+import { createAuthSlice } from '@/store/features/auth';
+import { createUISlice } from '@/store/features/ui';
+import { createFormsSlice } from '@/store/features/forms';
+import { createFormEditorSlice } from '@/store/features/form-editor';
 import { persistConfig } from '@/store/persist';
 
 export const useAppStore = create<AppState>()(

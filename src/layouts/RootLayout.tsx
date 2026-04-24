@@ -1,5 +1,5 @@
 import { Outlet, NavLink } from 'react-router-dom';
-import { FileText, Plus, Home } from 'lucide-react';
+import { FileText, Home } from 'lucide-react';
 import { ROUTES } from '@/router/routes';
 import { cn } from '@/utils';
 
@@ -11,21 +11,21 @@ export function RootLayout() {
         <div className='mx-auto flex h-14 max-w-7xl items-center justify-between px-4 sm:px-6'>
           {/* Brand */}
           <NavLink
-            to={ROUTES.SURVEYS}
+            to={ROUTES.FORMS}
             className='flex items-center gap-2.5 select-none'
           >
             <div className='flex h-8 w-8 items-center justify-center rounded-lg bg-[#0B1AA0]'>
               <FileText className='h-4 w-4 text-white' />
             </div>
             <span className='text-base font-semibold tracking-tight text-slate-900'>
-              Surveys
+              Forms
             </span>
           </NavLink>
 
           {/* Nav links */}
           <nav className='hidden items-center gap-1 sm:flex'>
             <NavLink
-              to={ROUTES.SURVEYS}
+              to={ROUTES.FORMS}
               end
               className={({ isActive }) =>
                 cn(
@@ -36,7 +36,7 @@ export function RootLayout() {
                 )
               }
             >
-              My Surveys
+              My Forms
             </NavLink>
           </nav>
 

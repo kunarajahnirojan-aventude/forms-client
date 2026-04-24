@@ -90,7 +90,7 @@ function isRequired(item: RawItem): boolean {
  */
 function getShortTextSubtype(
   item: RawItem,
-  title: string,
+  _title: string,
 ): 'single_line' | 'email' | 'url' {
   try {
     const details = safeArr((item as RawItem[])[4]);

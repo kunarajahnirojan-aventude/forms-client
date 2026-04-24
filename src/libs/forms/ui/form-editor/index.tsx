@@ -12,7 +12,7 @@ import {
   PencilLine,
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { useFormEditor_ } from '@/libs/forms/feature/hooks/useFormEditor';
+import { useFormEditor_ } from '@/libs/forms/hooks/use-form-editor';
 import { QuestionsCanvas } from './QuestionsCanvas';
 import { SettingsPanel } from './SettingsPanel';
 import { ThemePanel } from './ThemePanel';

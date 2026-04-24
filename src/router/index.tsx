@@ -7,12 +7,7 @@ const LandingPage = lazy(() => import('@/libs/home/feature'));
 const FormsListPage = lazy(() => import('@/libs/forms/feature/forms-list'));
 const FormsCreatePage = lazy(() => import('@/libs/forms/feature/forms-create'));
 const FormsEditPage = lazy(() => import('@/libs/forms/feature/forms-edit'));
-const FormPreviewPage = lazy(
-  () => import('@/libs/forms/feature/survey-preview'),
-);
-const FormRespondPage = lazy(
-  () => import('@/libs/forms/feature/rendering-engine'),
-);
+const FormRespondPage = lazy(() => import('@/libs/forms/feature/form-respond'));
 
 function PageLoader() {
   return (
@@ -39,7 +34,7 @@ export const router = createBrowserRouter([
     path: ROUTES.FORMS_PREVIEW,
     element: (
       <Lazy>
-        <FormPreviewPage />
+        <FormRespondPage isPreview={true} />
       </Lazy>
     ),
   },

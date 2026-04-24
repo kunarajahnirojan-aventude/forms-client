@@ -1,6 +1,6 @@
 import { FormsListView } from '@/libs/forms/ui/forms-list';
-import { useForms } from '@/libs/forms/feature/hooks/useForms';
-import { useImportForm } from '@/libs/forms/feature/hooks/useImportForm';
+import { useForms } from '@/libs/forms/hooks/use-forms';
+import { useImportForm } from '@/libs/forms/hooks/use-import-form';
 
 export default function FormsListPage() {
   const {

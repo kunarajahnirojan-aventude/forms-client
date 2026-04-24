@@ -8,7 +8,7 @@ import {
 import type { Question, QuestionType } from '@/libs/forms/store/types';
 import { QuestionCard } from './QuestionCard';
 import { QuestionTypeMenu } from './QuestionTypeMenu';
-import { useFormDnd } from '@/libs/forms/feature/hooks/useFormDnd';
+import { useFormDnd } from '@/libs/forms/hooks/use-form-dnd';
 
 interface QuestionsCanvasProps {
   questions: Question[];

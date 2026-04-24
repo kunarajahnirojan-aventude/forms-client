@@ -1,5 +1,5 @@
 import { nanoid } from 'nanoid';
-import type { FormsState, Form } from './types';
+import type { FormsState, Form } from '@/libs/forms/store/types';
 import type { StateCreator } from 'zustand';
 import type { AppState } from '@/store/types';
 

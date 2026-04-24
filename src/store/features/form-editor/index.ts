@@ -1,4 +1,4 @@
-import type { FormEditorState, EditorSnapshot } from './types';
+import type { FormEditorState, EditorSnapshot } from '@/libs/forms/store/types';
 import type { StateCreator } from 'zustand';
 import type { AppState } from '@/store/types';
 

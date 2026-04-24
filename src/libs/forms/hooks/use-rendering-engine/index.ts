@@ -7,7 +7,7 @@ import type {
   ChoiceValidation,
   MatrixValidation,
 } from '@/libs/forms/store/types';
-import { resolveInitialMode } from '../resolveInitialMode';
+import { resolveInitialMode } from './resolveInitialMode';
 
 interface PersistedState {
   answers: Record<string, unknown>;
@@ -40,10 +40,13 @@ function clearStorage(formId: string) {
   }
 }
 
-export function useRenderingEngine(form: Form) {
-  // Load persisted state once on mount
+export function useRenderingEngine(form: Form, isPreview = false) {
+  // Load persisted state once on mount (skip in preview mode)
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const persisted = useMemo(() => loadFromStorage(form.id), [form.id]);
+  const persisted = useMemo(
+    () => (isPreview ? {} : loadFromStorage(form.id)),
+    [form.id],
+  );
 
   const [mode, setModeState] = useState<DisplayMode>(
     persisted.mode ?? resolveInitialMode(form),
@@ -68,12 +71,12 @@ export function useRenderingEngine(form: Form) {
     [allQuestions],
   );
 
-  // Persist answers + mode on every change (skip after submit)
+  // Persist answers + mode on every change (skip after submit, skip in preview)
   useEffect(() => {
-    if (!submitted) {
+    if (!submitted && !isPreview) {
       saveToStorage(form.id, { answers, mode });
     }
-  }, [answers, mode, form.id, submitted]);
+  }, [answers, mode, form.id, submitted, isPreview]);
 
   // ── Actions ──────────────────────────────────────────────────────────────
 

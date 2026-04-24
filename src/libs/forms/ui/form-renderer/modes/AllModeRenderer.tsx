@@ -1,6 +1,6 @@
 import { Check } from 'lucide-react';
 import type { Form } from '@/libs/forms/store/types';
-import type { useRenderingEngine } from '@/libs/forms/feature/rendering-engine/hooks/useRenderingEngine';
+import type { useRenderingEngine } from '@/libs/forms/hooks/use-rendering-engine';
 import { QuestionBlock } from '../QuestionBlock';
 
 interface AllModeRendererProps {

@@ -80,7 +80,7 @@ const MODE_LABELS: Record<string, string> = {
 
 interface ImportFormModalProps {
   onClose: () => void;
-  onImport: (platform: ImportPlatform) => Form;
+  onImport: (platform: ImportPlatform, url: string) => Promise<Form>;
   onEdit: (id: string) => void;
   onPreview: (id: string) => void;
 }
@@ -134,12 +134,17 @@ export function ImportFormModal({
     setUrlError(error);
     if (error) return;
     setLoading(true);
-    // Simulate a brief async fetch
-    await new Promise((r) => setTimeout(r, 600));
-    const form = onImport(platform);
-    setImportedForm(form);
-    setLoading(false);
-    setStep(3);
+    try {
+      const form = await onImport(platform, url);
+      setImportedForm(form);
+      setStep(3);
+    } catch (err) {
+      setUrlError(
+        err instanceof Error ? err.message : 'Import failed. Please try again.',
+      );
+    } finally {
+      setLoading(false);
+    }
   }
 
   const selectedPlatform = PLATFORMS.find((p) => p.id === platform);
@@ -261,8 +266,9 @@ export function ImportFormModal({
                 <p className='mt-1.5 text-xs text-red-500'>{urlError}</p>
               ) : (
                 <p className='mt-1.5 text-xs text-slate-400'>
-                  We'll load a sample form to demonstrate the import. Live
-                  fetching requires a backend proxy.
+                  Paste the URL of a public form (sign-in not required). For
+                  Microsoft &amp; SurveyMonkey a sample is loaded until OAuth is
+                  set up.
                 </p>
               )}
             </div>
@@ -272,7 +278,7 @@ export function ImportFormModal({
               disabled={loading}
               className='w-full rounded-lg bg-[#0B1AA0] py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#0a179a] disabled:opacity-60'
             >
-              {loading ? 'Loading sample…' : 'Load Sample Form'}
+              {loading ? 'Importing…' : 'Import Form'}
             </button>
           </div>
         )}

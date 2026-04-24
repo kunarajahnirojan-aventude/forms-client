@@ -11,4 +11,15 @@ export default defineConfig({
       '@': resolve(__dirname, 'src'),
     },
   },
+  server: {
+    proxy: {
+      // Proxy Google Forms HTML requests to bypass CORS in dev.
+      // Replace this with a real backend endpoint in production.
+      '/google-forms-proxy': {
+        target: 'https://docs.google.com',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/google-forms-proxy/, ''),
+      },
+    },
+  },
 });

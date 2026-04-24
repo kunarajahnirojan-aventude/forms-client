@@ -6,14 +6,17 @@ import {
 import type { Form } from '@/libs/forms/store/types';
 
 /**
- * Calls the mock importer for the given platform, persists the result
+ * Calls the importer for the given platform and URL, persists the result
  * to the forms store, and returns the saved Form.
  */
 export function useImportForm() {
   const { addForm } = useFormsStore();
 
-  function importAndSave(platform: ImportPlatform): Form {
-    const form = importForm(platform);
+  async function importAndSave(
+    platform: ImportPlatform,
+    url: string,
+  ): Promise<Form> {
+    const form = await importForm(platform, url);
     addForm(form);
     return form;
   }

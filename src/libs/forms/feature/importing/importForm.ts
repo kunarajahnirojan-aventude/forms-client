@@ -3,20 +3,31 @@ import { resolveInitialMode } from '@/libs/forms/feature/rendering-engine/resolv
 import { convertGoogleForm } from './converters/googleForms';
 import { convertMicrosoftForm } from './converters/microsoftForms';
 import { convertSurveyMonkeyForm } from './converters/surveyMonkey';
+import { fetchGoogleFormData } from './fetchGoogleFormHtml';
+import { convertGoogleFormPublic } from './converters/googleFormsPublic';
 
 export type ImportPlatform = 'google' | 'microsoft' | 'surveymonkey';
 
 /**
- * Converts a platform mock into a normalized Form, then auto-sets
- * defaultDisplayMode based on the detected structure.
+ * Fetches/converts a form from the given platform URL into a normalized Form,
+ * then auto-sets defaultDisplayMode based on the detected structure.
+ *
+ * Google Forms: fetches the real form via the dev proxy (no OAuth needed for
+ * public forms). Microsoft Forms & SurveyMonkey fall back to mock data until
+ * a backend OAuth integration is available.
  */
-export function importForm(platform: ImportPlatform): Form {
+export async function importForm(
+  platform: ImportPlatform,
+  url: string,
+): Promise<Form> {
   let form: Form;
 
   switch (platform) {
-    case 'google':
-      form = convertGoogleForm();
+    case 'google': {
+      const data = await fetchGoogleFormData(url);
+      form = convertGoogleFormPublic(data);
       break;
+    }
     case 'microsoft':
       form = convertMicrosoftForm();
       break;

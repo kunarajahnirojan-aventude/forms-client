@@ -21,7 +21,7 @@ interface FormsListViewProps {
   onDuplicate: (id: string) => void;
   onStatusChange: (id: string, status: FormStatus) => void;
   onCopyLink: (shareToken: string) => void;
-  onImport: (platform: ImportPlatform) => Form;
+  onImport: (platform: ImportPlatform, url: string) => Promise<Form>;
 }
 
 export function FormsListView({

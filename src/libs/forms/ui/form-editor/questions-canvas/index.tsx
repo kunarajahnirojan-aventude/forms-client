@@ -6,8 +6,8 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import type { Question, QuestionType } from '@/libs/forms/store/types';
-import { QuestionCard } from './QuestionCard';
-import { QuestionTypeMenu } from './QuestionTypeMenu';
+import { QuestionCard } from '../question-card';
+import { QuestionTypeMenu } from '../question-type-menu';
 import { useFormDnd } from '@/libs/forms/hooks/use-form-dnd';
 
 interface QuestionsCanvasProps {

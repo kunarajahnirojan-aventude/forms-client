@@ -34,14 +34,6 @@ export const router = createBrowserRouter([
     path: ROUTES.FORMS_PREVIEW,
     element: (
       <Lazy>
-        <FormRespondPage isPreview={true} />
-      </Lazy>
-    ),
-  },
-  {
-    path: ROUTES.FORMS_RESPOND,
-    element: (
-      <Lazy>
         <FormRespondPage />
       </Lazy>
     ),

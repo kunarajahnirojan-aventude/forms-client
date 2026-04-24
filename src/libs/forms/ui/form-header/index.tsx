@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react';
 import { Image } from 'lucide-react';
 import { cn } from '@/utils';
-import { RichTextEditor } from '@/libs/forms/ui/form-setup/RichTextEditor';
+import { RichTextEditor } from '@/libs/forms/ui/form-setup/rich-text-editor';
 
 interface FormHeaderProps {
   title: string;

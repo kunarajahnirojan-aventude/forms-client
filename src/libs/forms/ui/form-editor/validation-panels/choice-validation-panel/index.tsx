@@ -1,5 +1,5 @@
 import type { Question, ChoiceValidation } from '@/libs/forms/store/types';
-import { Toggle, Row } from './TextValidationPanel';
+import { Toggle, Row } from '../text-validation-panel';
 
 interface ChoiceValidationPanelProps {
   question: Question;

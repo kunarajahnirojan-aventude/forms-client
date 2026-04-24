@@ -1,8 +1,5 @@
 import { useFormsStore } from '@/store';
-import {
-  importForm,
-  type ImportPlatform,
-} from '@/libs/forms/feature/importing/importForm';
+import { importForm, type ImportPlatform } from '@/libs/forms/hooks/importing';
 import type { Form } from '@/libs/forms/store/types';
 
 /**

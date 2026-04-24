@@ -3,7 +3,7 @@ import type {
   RatingValidation,
   LinearScaleValidation,
 } from '@/libs/forms/store/types';
-import { Toggle, Row } from './TextValidationPanel';
+import { Toggle, Row } from '../text-validation-panel';
 
 interface ScaleValidationPanelProps {
   question: Question;

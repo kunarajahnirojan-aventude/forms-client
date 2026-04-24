@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { nanoid } from 'nanoid';
 import { useFormsStore, useFormEditor } from '@/store';
-import { FormSetupView } from '@/libs/forms/ui/form-setup/FormSetupView';
+import { FormSetupView } from '@/libs/forms/ui/form-setup/form-setup-view';
 import { formsEditPath } from '@/router/routes';
 import type { Form } from '@/libs/forms/store/types';
 

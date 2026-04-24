@@ -1,8 +1,8 @@
 import type { Form } from '@/libs/forms/store/types';
 import type { useRenderingEngine } from '@/libs/forms/hooks/use-rendering-engine';
-import { QuestionBlock } from '../QuestionBlock';
-import { NavigationButtons } from '../NavigationButtons';
-import { ProgressBar } from '../ProgressBar';
+import { QuestionBlock } from '../../question-block';
+import { NavigationButtons } from '../../navigation-buttons';
+import { ProgressBar } from '../../progress-bar';
 
 interface QuestionModeRendererProps {
   form: Form;

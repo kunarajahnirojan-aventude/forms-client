@@ -1,14 +1,14 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import type { Form, FormStatus } from '@/libs/forms/store/types';
-import type { ImportPlatform } from '@/libs/forms/feature/importing/importForm';
-import { FormCard } from './FormCard';
-import { EmptyState } from './EmptyState';
-import { FormsSearchBar } from './FormsSearchBar';
-import { StatusFilter } from './StatusFilter';
-import { ImportFormModal } from './ImportFormModal';
+import type { ImportPlatform } from '@/libs/forms/hooks/importing';
+import { FormCard } from '@/libs/forms/ui/form-card';
+import { EmptyState } from '@/libs/forms/ui/empty-state';
+import { FormsSearchBar } from '@/libs/forms/ui/forms-search-bar';
+import { StatusFilter } from '@/libs/forms/ui/status-filter';
+import { ImportFormModal } from '@/libs/forms/ui/import-form-modal';
 import { ROUTES } from '@/router/routes';
-import { formsEditPath, formsRespondPath } from '@/router/routes';
+import { formsEditPath, formsPreviewPath } from '@/router/routes';
 import { Plus, Download } from 'lucide-react';
 
 interface FormsListViewProps {
@@ -111,7 +111,7 @@ export function FormsListView({
           }}
           onPreview={(id) => {
             setShowImportModal(false);
-            navigate(formsRespondPath(id));
+            navigate(formsPreviewPath(id));
           }}
         />
       )}

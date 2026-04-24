@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { X, Check } from 'lucide-react';
 import type { Form } from '@/libs/forms/store/types';
-import type { ImportPlatform } from '@/libs/forms/feature/importing/importForm';
+import type { ImportPlatform } from '@/libs/forms/hooks/importing';
 
 // ── URL validation ───────────────────────────────────────────────────────────
 

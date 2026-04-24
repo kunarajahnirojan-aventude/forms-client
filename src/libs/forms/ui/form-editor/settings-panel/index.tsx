@@ -1,5 +1,5 @@
 import type { FormSettings } from '@/libs/forms/store/types';
-import { Toggle, Row } from './validation-panels/TextValidationPanel';
+import { Toggle, Row } from '../validation-panels/text-validation-panel';
 
 interface SettingsPanelProps {
   settings: FormSettings;

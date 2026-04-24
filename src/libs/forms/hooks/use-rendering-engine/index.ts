@@ -40,13 +40,10 @@ function clearStorage(formId: string) {
   }
 }
 
-export function useRenderingEngine(form: Form, isPreview = false) {
-  // Load persisted state once on mount (skip in preview mode)
+export function useRenderingEngine(form: Form) {
+  // Load persisted state once on mount
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const persisted = useMemo(
-    () => (isPreview ? {} : loadFromStorage(form.id)),
-    [form.id],
-  );
+  const persisted = useMemo(() => loadFromStorage(form.id), [form.id]);
 
   const [mode, setModeState] = useState<DisplayMode>(
     persisted.mode ?? resolveInitialMode(form),
@@ -71,12 +68,12 @@ export function useRenderingEngine(form: Form, isPreview = false) {
     [allQuestions],
   );
 
-  // Persist answers + mode on every change (skip after submit, skip in preview)
+  // Persist answers + mode on every change (skip after submit)
   useEffect(() => {
-    if (!submitted && !isPreview) {
+    if (!submitted) {
       saveToStorage(form.id, { answers, mode });
     }
-  }, [answers, mode, form.id, submitted, isPreview]);
+  }, [answers, mode, form.id, submitted]);
 
   // ── Actions ──────────────────────────────────────────────────────────────
 

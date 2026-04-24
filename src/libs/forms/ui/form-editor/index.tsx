@@ -13,10 +13,10 @@ import {
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useFormEditor_ } from '@/libs/forms/hooks/use-form-editor';
-import { QuestionsCanvas } from './QuestionsCanvas';
-import { SettingsPanel } from './SettingsPanel';
-import { ThemePanel } from './ThemePanel';
-import { PagesSidebar } from './PagesSidebar';
+import { QuestionsCanvas } from './questions-canvas';
+import { SettingsPanel } from './settings-panel';
+import { ThemePanel } from './theme-panel';
+import { PagesSidebar } from './pages-sidebar';
 import { cn } from '@/utils';
 import { ROUTES, formsPreviewPath } from '@/router/routes';
 

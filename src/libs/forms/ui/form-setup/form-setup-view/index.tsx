@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowRight, ChevronLeft, FileText } from 'lucide-react';
-import { RichTextEditor } from './RichTextEditor';
+import { RichTextEditor } from '../rich-text-editor';
 import { ROUTES } from '@/router/routes';
 
 interface FormSetupViewProps {

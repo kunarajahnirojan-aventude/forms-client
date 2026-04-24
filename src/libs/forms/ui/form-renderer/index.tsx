@@ -2,10 +2,10 @@ import { useState, useEffect } from 'react';
 import { CheckCircle2 } from 'lucide-react';
 import type { Form } from '@/libs/forms/store/types';
 import { useRenderingEngine } from '@/libs/forms/hooks/use-rendering-engine';
-import { ModeSwitcher } from './ModeSwitcher';
-import { PageModeRenderer } from './modes/PageModeRenderer';
-import { QuestionModeRenderer } from './modes/QuestionModeRenderer';
-import { AllModeRenderer } from './modes/AllModeRenderer';
+import { ModeSwitcher } from './mode-switcher';
+import { PageModeRenderer } from './modes/page-mode-renderer';
+import { QuestionModeRenderer } from './modes/question-mode-renderer';
+import { AllModeRenderer } from './modes/all-mode-renderer';
 
 // ── Theme gradients (mirrors survey-preview) ──────────────────────────────────
 const GRADIENT_MAP: Record<string, string> = {
@@ -68,11 +68,10 @@ function Confetti() {
 
 interface FormRendererProps {
   form: Form;
-  isPreview?: boolean;
 }
 
-export function FormRenderer({ form, isPreview = false }: FormRendererProps) {
-  const engine = useRenderingEngine(form, isPreview);
+export function FormRenderer({ form }: FormRendererProps) {
+  const engine = useRenderingEngine(form);
   const [showConfetti, setShowConfetti] = useState(false);
 
   const gradient = GRADIENT_MAP[form.theme.color] ?? GRADIENT_MAP.blue;
@@ -124,11 +123,9 @@ export function FormRenderer({ form, isPreview = false }: FormRendererProps) {
           {form.description && (
             <p className='mt-1.5 text-sm text-white/80'>{form.description}</p>
           )}
-          {!isPreview && (
-            <div className='mt-5'>
-              <ModeSwitcher mode={engine.mode} onChange={engine.setMode} />
-            </div>
-          )}
+          <div className='mt-5'>
+            <ModeSwitcher mode={engine.mode} onChange={engine.setMode} />
+          </div>
         </div>
       </div>
 

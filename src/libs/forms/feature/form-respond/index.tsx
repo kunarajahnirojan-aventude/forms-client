@@ -3,13 +3,7 @@ import { useFormsStore } from '@/store';
 import { FormRenderer } from '@/libs/forms/ui/form-renderer';
 import { ROUTES } from '@/router/routes';
 
-interface FormRespondPageProps {
-  isPreview?: boolean;
-}
-
-export default function FormRespondPage({
-  isPreview = false,
-}: FormRespondPageProps) {
+export default function FormRespondPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { forms } = useFormsStore();
@@ -30,5 +24,5 @@ export default function FormRespondPage({
     );
   }
 
-  return <FormRenderer form={form} isPreview={isPreview} />;
+  return <FormRenderer form={form} />;
 }

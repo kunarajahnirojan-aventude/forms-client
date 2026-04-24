@@ -1,5 +1,5 @@
 import type { Question, FileValidation } from '@/libs/forms/store/types';
-import { Toggle, Row } from './TextValidationPanel';
+import { Toggle, Row } from '../text-validation-panel';
 
 const FILE_TYPE_OPTIONS = [
   { label: 'Images', value: 'image/*' },

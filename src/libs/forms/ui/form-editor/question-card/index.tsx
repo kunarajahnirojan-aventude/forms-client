@@ -23,25 +23,25 @@ import {
 } from 'lucide-react';
 import type { Question, QuestionType } from '@/libs/forms/store/types';
 import { cn } from '@/utils';
-import { TextQuestion } from './question-types/TextQuestion';
-import { ChoiceQuestion } from './question-types/ChoiceQuestion';
-import { DateQuestion } from './question-types/DateQuestion';
-import { RatingQuestion } from './question-types/RatingQuestion';
-import { LinearScaleQuestion } from './question-types/LinearScaleQuestion';
-import { SectionQuestion } from './question-types/SectionQuestion';
-import { FileQuestion } from './question-types/FileQuestion';
-import { YesNoQuestion } from './question-types/YesNoQuestion';
-import { MatrixQuestion } from './question-types/MatrixQuestion';
-import { PhoneQuestion } from './question-types/PhoneQuestion';
-import { TextValidationPanel } from './validation-panels/TextValidationPanel';
-import { ChoiceValidationPanel } from './validation-panels/ChoiceValidationPanel';
-import { DateValidationPanel } from './validation-panels/DateValidationPanel';
-import { FileValidationPanel } from './validation-panels/FileValidationPanel';
+import { TextQuestion } from '../question-types/text-question';
+import { ChoiceQuestion } from '../question-types/choice-question';
+import { DateQuestion } from '../question-types/date-question';
+import { RatingQuestion } from '../question-types/rating-question';
+import { LinearScaleQuestion } from '../question-types/linear-scale-question';
+import { SectionQuestion } from '../question-types/section-question';
+import { FileQuestion } from '../question-types/file-question';
+import { YesNoQuestion } from '../question-types/yes-no-question';
+import { MatrixQuestion } from '../question-types/matrix-question';
+import { PhoneQuestion } from '../question-types/phone-question';
+import { TextValidationPanel } from '../validation-panels/text-validation-panel';
+import { ChoiceValidationPanel } from '../validation-panels/choice-validation-panel';
+import { DateValidationPanel } from '../validation-panels/date-validation-panel';
+import { FileValidationPanel } from '../validation-panels/file-validation-panel';
 import {
   RatingValidationPanel,
   LinearScaleValidationPanel,
-} from './validation-panels/ScaleValidationPanel';
-import { Toggle } from './validation-panels/TextValidationPanel';
+} from '../validation-panels/scale-validation-panel';
+import { Toggle } from '../validation-panels/text-validation-panel';
 
 const TYPE_META: Record<
   QuestionType,

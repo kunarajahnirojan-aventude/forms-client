@@ -1,14 +1,14 @@
 import type { Question } from '@/libs/forms/store/types';
 import { AlertCircle } from 'lucide-react';
-import { TextQuestion } from '@/libs/forms/ui/form-editor/question-types/TextQuestion';
-import { ChoiceQuestion } from '@/libs/forms/ui/form-editor/question-types/ChoiceQuestion';
-import { DateQuestion } from '@/libs/forms/ui/form-editor/question-types/DateQuestion';
-import { RatingQuestion } from '@/libs/forms/ui/form-editor/question-types/RatingQuestion';
-import { LinearScaleQuestion } from '@/libs/forms/ui/form-editor/question-types/LinearScaleQuestion';
-import { FileQuestion } from '@/libs/forms/ui/form-editor/question-types/FileQuestion';
-import { YesNoQuestion } from '@/libs/forms/ui/form-editor/question-types/YesNoQuestion';
-import { MatrixQuestion } from '@/libs/forms/ui/form-editor/question-types/MatrixQuestion';
-import { PhoneQuestion } from '@/libs/forms/ui/form-editor/question-types/PhoneQuestion';
+import { TextQuestion } from '@/libs/forms/ui/form-editor/question-types/text-question';
+import { ChoiceQuestion } from '@/libs/forms/ui/form-editor/question-types/choice-question';
+import { DateQuestion } from '@/libs/forms/ui/form-editor/question-types/date-question';
+import { RatingQuestion } from '@/libs/forms/ui/form-editor/question-types/rating-question';
+import { LinearScaleQuestion } from '@/libs/forms/ui/form-editor/question-types/linear-scale-question';
+import { FileQuestion } from '@/libs/forms/ui/form-editor/question-types/file-question';
+import { YesNoQuestion } from '@/libs/forms/ui/form-editor/question-types/yes-no-question';
+import { MatrixQuestion } from '@/libs/forms/ui/form-editor/question-types/matrix-question';
+import { PhoneQuestion } from '@/libs/forms/ui/form-editor/question-types/phone-question';
 
 interface QuestionBodyRespondProps {
   question: Question;

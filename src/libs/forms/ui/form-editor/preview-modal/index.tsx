@@ -1,16 +1,16 @@
 import { useEffect } from 'react';
 import { X, ChevronRight } from 'lucide-react';
 import type { Form } from '@/libs/forms/store/types';
-import { TextQuestion } from './question-types/TextQuestion';
-import { ChoiceQuestion } from './question-types/ChoiceQuestion';
-import { DateQuestion } from './question-types/DateQuestion';
-import { RatingQuestion } from './question-types/RatingQuestion';
-import { LinearScaleQuestion } from './question-types/LinearScaleQuestion';
-import { SectionQuestion } from './question-types/SectionQuestion';
-import { FileQuestion } from './question-types/FileQuestion';
-import { YesNoQuestion } from './question-types/YesNoQuestion';
-import { MatrixQuestion } from './question-types/MatrixQuestion';
-import { PhoneQuestion } from './question-types/PhoneQuestion';
+import { TextQuestion } from '../question-types/text-question';
+import { ChoiceQuestion } from '../question-types/choice-question';
+import { DateQuestion } from '../question-types/date-question';
+import { RatingQuestion } from '../question-types/rating-question';
+import { LinearScaleQuestion } from '../question-types/linear-scale-question';
+import { SectionQuestion } from '../question-types/section-question';
+import { FileQuestion } from '../question-types/file-question';
+import { YesNoQuestion } from '../question-types/yes-no-question';
+import { MatrixQuestion } from '../question-types/matrix-question';
+import { PhoneQuestion } from '../question-types/phone-question';
 import { cn } from '@/utils';
 import type { Question } from '@/libs/forms/store/types';
 

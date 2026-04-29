@@ -1,4 +1,9 @@
 {
+  "globalHeaders": {
+    "Access-Control-Allow-Methods": "GET, OPTIONS",
+    "Access-Control-Allow-Origin": "*",
+    "X-Content-Type-Options": "nosniff"
+  },
   "mimeTypes": {
     ".js": "application/javascript",
     ".mjs": "application/javascript",

@@ -9,7 +9,6 @@ import {
   Upload,
   Minus,
   ToggleLeft,
-  Phone,
   Grid3x3,
 } from 'lucide-react';
 import type { QuestionType } from '@/libs/forms/store/types';
@@ -33,13 +32,6 @@ const QUESTION_TYPES: { category: string; items: QuestionTypeOption[] }[] = [
         icon: <Type className='h-4 w-4' />,
         description: 'Short or long text',
         color: 'text-[#0B1AA0] bg-[#0B1AA0]/10',
-      },
-      {
-        type: 'phone',
-        label: 'Phone',
-        icon: <Phone className='h-4 w-4' />,
-        description: 'Phone number',
-        color: 'text-cyan-600 bg-cyan-50',
       },
       {
         type: 'date',

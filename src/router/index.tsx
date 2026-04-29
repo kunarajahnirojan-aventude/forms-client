@@ -8,6 +8,9 @@ const FormsListPage = lazy(() => import('@/libs/forms/feature/forms-list'));
 const FormsCreatePage = lazy(() => import('@/libs/forms/feature/forms-create'));
 const FormsEditPage = lazy(() => import('@/libs/forms/feature/forms-edit'));
 const FormRespondPage = lazy(() => import('@/libs/forms/feature/form-respond'));
+const FormResponsesPage = lazy(
+  () => import('@/libs/forms/feature/form-responses'),
+);
 
 function PageLoader() {
   return (
@@ -35,6 +38,14 @@ export const router = createBrowserRouter([
     element: (
       <Lazy>
         <FormRespondPage />
+      </Lazy>
+    ),
+  },
+  {
+    path: ROUTES.ADMIN_RESPONSES,
+    element: (
+      <Lazy>
+        <FormResponsesPage />
       </Lazy>
     ),
   },

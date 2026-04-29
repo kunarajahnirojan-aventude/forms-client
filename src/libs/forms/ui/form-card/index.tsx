@@ -11,9 +11,10 @@ import {
   Clock,
   XCircle,
   FileText,
+  Table2,
 } from 'lucide-react';
 import type { Form, FormStatus } from '@/libs/forms/store/types';
-import { formsEditPath } from '@/router/routes';
+import { formsEditPath, adminResponsesPath } from '@/router/routes';
 import { cn } from '@/utils';
 
 const STATUS_CONFIG: Record<
@@ -129,7 +130,21 @@ export function FormCard({
             {status.label}
           </span>
 
-          <div className='flex items-center gap-1 text-xs text-slate-500'>
+          <div
+            className='flex items-center gap-1 text-xs text-slate-500 hover:text-blue-600 transition-colors'
+            onClick={(e) => {
+              e.stopPropagation();
+              navigate(adminResponsesPath(form.id));
+            }}
+            role='button'
+            tabIndex={0}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                e.stopPropagation();
+                navigate(adminResponsesPath(form.id));
+              }
+            }}
+          >
             <BarChart2 className='h-3.5 w-3.5' />
             <span>
               {form.responseCount.toLocaleString()}{' '}
@@ -190,6 +205,14 @@ export function FormCard({
               onClick={() => {
                 setMenuOpen(false);
                 onCopyLink(form.shareToken);
+              }}
+            />
+            <MenuItem
+              icon={<Table2 className='h-4 w-4' />}
+              label='View responses'
+              onClick={() => {
+                setMenuOpen(false);
+                navigate(adminResponsesPath(form.id));
               }}
             />
 

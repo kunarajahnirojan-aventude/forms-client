@@ -6,6 +6,7 @@ export const ROUTES = {
   FORMS_NEW: '/forms/new',
   FORMS_EDIT: '/forms/:id/edit',
   FORMS_PREVIEW: '/forms/:id/preview',
+  ADMIN_RESPONSES: '/admin/forms/:id/responses',
 } as const;
 
 export type Route = (typeof ROUTES)[keyof typeof ROUTES];
@@ -16,4 +17,8 @@ export function formsEditPath(id: string) {
 
 export function formsPreviewPath(id: string) {
   return `/forms/${id}/preview`;
+}
+
+export function adminResponsesPath(id: string) {
+  return `/admin/forms/${id}/responses`;
 }

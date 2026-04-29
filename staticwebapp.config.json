@@ -1,9 +1,15 @@
 {
+  "mimeTypes": {
+    ".js": "application/javascript",
+    ".mjs": "application/javascript",
+    ".css": "text/css",
+    ".wasm": "application/wasm"
+  },
   "navigationFallback": {
     "rewrite": "/index.html",
     "exclude": [
       "/assets/*",
-      "/*.{css,js,png,jpg,jpeg,gif,svg,ico,woff,woff2,ttf,eot}"
+      "/*.{css,js,mjs,png,jpg,jpeg,gif,svg,ico,woff,woff2,ttf,eot}"
     ]
   }
 }

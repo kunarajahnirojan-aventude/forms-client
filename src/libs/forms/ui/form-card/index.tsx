@@ -86,7 +86,11 @@ export function FormCard({
 
   return (
     <div
-      className='group relative flex flex-col overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm transition-all hover:shadow-md hover:-translate-y-0.5 cursor-pointer'
+      className={cn(
+        'group relative flex flex-col rounded-xl border border-slate-200 bg-white shadow-sm transition-all hover:shadow-md hover:-translate-y-0.5 cursor-pointer',
+        menuOpen && 'z-10',
+      )}
+      style={{ isolation: 'isolate' }}
       onClick={() => navigate(formsEditPath(form.id))}
     >
       {/* Color header */}
@@ -172,9 +176,7 @@ export function FormCard({
           className={cn(
             'flex h-7 w-7 items-center justify-center rounded-md text-slate-400 transition-colors',
             'hover:bg-slate-100 hover:text-slate-700',
-            menuOpen
-              ? 'bg-slate-100 text-slate-700'
-              : 'opacity-0 group-hover:opacity-100',
+            menuOpen ? 'bg-slate-100 text-slate-700' : 'opacity-100',
           )}
           aria-label='Survey options'
         >
@@ -182,7 +184,7 @@ export function FormCard({
         </button>
 
         {menuOpen && (
-          <div className='absolute right-0 z-20 mt-1 w-48 rounded-xl border border-slate-200 bg-white py-1 shadow-lg'>
+          <div className='absolute right-0 z-50 mt-1 w-48 rounded-xl border border-slate-200 bg-white py-1 shadow-lg'>
             <MenuItem
               icon={<Edit3 className='h-4 w-4' />}
               label='Edit survey'

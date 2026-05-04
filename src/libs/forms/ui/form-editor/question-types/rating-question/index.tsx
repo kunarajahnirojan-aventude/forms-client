@@ -26,9 +26,6 @@ export function RatingQuestion({
 
   return (
     <div className='mt-3'>
-      {v?.showLabels && v.labelLow && (
-        <p className='mb-1.5 text-xs text-slate-500'>{v.labelLow}</p>
-      )}
       <div className='flex gap-1'>
         {stars.map((n) => (
           <button
@@ -58,8 +55,11 @@ export function RatingQuestion({
           </button>
         ))}
       </div>
-      {v?.showLabels && v.labelHigh && (
-        <p className='mt-1.5 text-xs text-slate-500'>{v.labelHigh}</p>
+      {v?.showLabels && (v?.labelLow || v?.labelHigh) && (
+        <div className='mt-1.5 flex justify-between text-xs text-slate-500'>
+          <span>{v?.labelLow ?? ''}</span>
+          <span>{v?.labelHigh ?? ''}</span>
+        </div>
       )}
     </div>
   );

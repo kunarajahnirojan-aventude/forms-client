@@ -48,6 +48,16 @@ type RawData = unknown[];
 function safeStr(v: unknown): string {
   return typeof v === 'string' ? v : '';
 }
+// Handles both plain string and Google's [null, string] nested pattern
+function safeStrDeep(v: unknown): string {
+  if (typeof v === 'string') return v;
+  if (Array.isArray(v)) {
+    for (const item of v) {
+      if (typeof item === 'string' && item.length > 0) return item;
+    }
+  }
+  return '';
+}
 function safeArr(v: unknown): unknown[] {
   return Array.isArray(v) ? v : [];
 }
@@ -248,9 +258,10 @@ function convertItem(item: RawItem): Question | null {
 }
 
 export function convertGoogleFormPublic(data: RawData): Form {
-  debugger;
   const formBlock = safeArr(data[1]);
-  const title = safeStr(data[3]) || safeStr(formBlock[8]) || 'Imported Form';
+  const title =
+    safeStr(data[3]) || safeStrDeep(formBlock[8]) || 'Imported Form';
+  const formDescription = safeStrDeep(formBlock[8]) || undefined;
   const rawSettings = safeArr(formBlock[2]);
   const confirmationMessage =
     safeStr(rawSettings[0]) || 'Thank you for your response!';
@@ -276,7 +287,16 @@ export function convertGoogleFormPublic(data: RawData): Form {
     }
 
     if (!currentPage) {
-      currentPage = { id: nanoid(), title: 'Page 1', questions: [] };
+      // Section 1 in Google Forms: the form title is already shown in the
+      // gradient header, so we leave the page title empty to avoid duplication.
+      // We store only the form description on the page so it renders as
+      // section-1 descriptive text.
+      currentPage = {
+        id: nanoid(),
+        title: '',
+        description: formDescription,
+        questions: [],
+      };
     }
 
     const question = convertItem(item);
@@ -293,7 +313,7 @@ export function convertGoogleFormPublic(data: RawData): Form {
   return {
     id: nanoid(),
     title,
-    description: undefined,
+    description: formDescription,
     status: 'draft',
     pages,
     settings: {

@@ -44,17 +44,31 @@ export function PageModeRenderer({
         <ProgressBar
           current={currentPageIndex}
           total={form.pages.length}
-          label='Page'
+          label='Section'
         />
       </div>
 
-      {currentPage.title && (
-        <h2 className='mb-2 text-xl font-semibold text-slate-800'>
-          {currentPage.title}
-        </h2>
-      )}
-      {currentPage.description && (
-        <p className='mb-6 text-sm text-slate-500'>{currentPage.description}</p>
+      {/* Section header card — shown when the page has a title or description */}
+      {(currentPage.title || currentPage.description) && (
+        <div className='mb-4 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm'>
+          <div className='h-1.5 bg-[#0B1AA0]' />
+          <div className='p-5'>
+            {currentPage.title && (
+              <h2 className='text-xl font-semibold text-slate-800'>
+                {currentPage.title}
+              </h2>
+            )}
+            {currentPage.description && (
+              <p
+                className={`text-sm text-slate-500${
+                  currentPage.title ? ' mt-2' : ''
+                }`}
+              >
+                {currentPage.description}
+              </p>
+            )}
+          </div>
+        </div>
       )}
 
       <div className='space-y-4'>

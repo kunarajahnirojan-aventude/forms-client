@@ -84,7 +84,7 @@ function ColumnHeader({
     return (
       <th
         rowSpan={rowSpan}
-        className='whitespace-nowrap px-4 py-3 text-left text-xs font-semibold text-slate-700 max-w-50 align-top'
+        className='whitespace-nowrap px-4 py-3 text-center text-xs font-semibold text-slate-700 max-w-50 align-center'
       >
         <span className='line-clamp-2 leading-tight'>{question.title}</span>
       </th>
@@ -249,8 +249,8 @@ function PageTable({
     <div className='flex flex-col gap-3'>
       {/* Page heading + column picker */}
       <div className='flex items-center justify-between gap-2'>
-        <div className='flex items-center gap-2'>
-          <span className='flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-slate-200 text-xs font-semibold text-slate-600'>
+        <div className='flex items-center gap-2.5'>
+          <span className='flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-slate-700 text-xs font-semibold text-white'>
             {pageIndex + 1}
           </span>
           <h2 className='text-sm font-semibold text-slate-800'>{page.title}</h2>
@@ -327,13 +327,13 @@ function PageTable({
             <tr className='border-b border-slate-200 bg-slate-50'>
               <th
                 rowSpan={hasMatrix ? 2 : 1}
-                className='w-10 px-4 py-3 text-xs font-semibold text-slate-400 align-middle'
+                className='w-10 px-4 py-3 text-center text-xs font-semibold text-slate-400 align-middle'
               >
                 #
               </th>
               <th
                 rowSpan={hasMatrix ? 2 : 1}
-                className='whitespace-nowrap px-4 py-3 text-left text-xs font-semibold text-slate-700 align-middle'
+                className='whitespace-nowrap px-4 py-3 text-center text-xs font-semibold text-slate-700 align-middle'
               >
                 Submitted
               </th>
@@ -365,7 +365,7 @@ function PageTable({
                     ? (col.matrixRows ?? []).map((row) => (
                         <th
                           key={row.id}
-                          className='whitespace-nowrap px-4 py-2 text-left text-xs font-medium text-slate-500 max-w-40'
+                          className='whitespace-nowrap px-4 py-2 text-center text-xs font-medium text-slate-500 max-w-40'
                         >
                           {row.label}
                         </th>
@@ -394,10 +394,10 @@ function PageTable({
                     idx % 2 === 1 && 'bg-slate-50/40',
                   )}
                 >
-                  <td className='px-4 py-3 text-xs text-slate-400'>
+                  <td className='px-4 py-3 text-center text-xs text-slate-400'>
                     {rowOffset + idx + 1}
                   </td>
-                  <td className='whitespace-nowrap px-4 py-3 text-sm text-slate-500'>
+                  <td className='whitespace-nowrap px-4 py-3 text-center text-sm text-slate-500'>
                     {new Date(response.submittedAt).toLocaleDateString(
                       undefined,
                       { month: 'short', day: 'numeric', year: 'numeric' },
@@ -421,16 +421,22 @@ function PageTable({
                       return (
                         <td
                           key={`${col.question.id}-${col.row.id}`}
-                          className='px-4 py-3 text-sm text-slate-700 max-w-40'
+                          className='px-4 py-3 text-center text-sm text-slate-700 max-w-40'
                         >
                           <span className='line-clamp-2'>{text}</span>
                         </td>
                       );
                     }
+                    const isCenterAligned = !FILTERABLE_TYPES.has(
+                      col.question.type,
+                    );
                     return (
                       <td
                         key={col.question.id}
-                        className='px-4 py-3 text-sm text-slate-700 max-w-50'
+                        className={cn(
+                          'px-4 py-3 text-sm text-slate-700 max-w-50',
+                          isCenterAligned && 'text-center',
+                        )}
                       >
                         <span className='line-clamp-2'>
                           {formatCellValue(
@@ -450,9 +456,9 @@ function PageTable({
 
       {/* Pagination controls */}
       {responses.length > 0 && (
-        <div className='flex items-center justify-between'>
-          <div className='flex items-center gap-2 text-xs text-slate-500'>
-            <span>Rows per page</span>
+        <div className='flex items-center justify-between rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-xs text-slate-600'>
+          <div className='flex items-center gap-2'>
+            <span className='text-slate-500'>Rows per page</span>
             <select
               value={rowsPerPage}
               onChange={(e) => {
@@ -469,8 +475,8 @@ function PageTable({
             </select>
           </div>
 
-          <div className='flex items-center gap-3 text-xs text-slate-600'>
-            <span>
+          <div className='flex items-center gap-3'>
+            <span className='text-slate-500'>
               {rowOffset + 1}–
               {Math.min(rowOffset + rowsPerPage, responses.length)} of{' '}
               {responses.length}
@@ -483,7 +489,7 @@ function PageTable({
               >
                 <ChevronLeft className='h-4 w-4' />
               </button>
-              <span className='px-2 font-medium text-slate-700'>
+              <span className='min-w-12 text-center font-medium text-slate-700'>
                 {currentPage + 1} / {totalPages}
               </span>
               <button
@@ -528,19 +534,27 @@ export function ResponsesTable({
   const activeFilterCount = Object.values(filters).filter(Boolean).length;
 
   return (
-    <div className='flex flex-col gap-8'>
+    <div className='flex flex-col gap-6'>
       {/* Toolbar */}
-      <div className='flex items-center justify-between'>
-        <p className='text-sm text-slate-500'>
-          Showing{' '}
-          <span className='font-medium text-slate-800'>{responses.length}</span>{' '}
-          of <span className='font-medium text-slate-800'>{totalCount}</span>{' '}
-          {totalCount === 1 ? 'response' : 'responses'}
+      <div className='flex items-center justify-between rounded-xl border border-slate-200 bg-white px-5 py-3.5 shadow-sm'>
+        <p className='text-sm text-slate-600'>
+          <span className='font-semibold text-slate-900'>
+            {responses.length}
+          </span>
+          {responses.length !== totalCount && (
+            <>
+              {' '}
+              of{' '}
+              <span className='font-semibold text-slate-900'>{totalCount}</span>
+            </>
+          )}{' '}
+          {responses.length === 1 ? 'response' : 'responses'}
+          {responses.length !== totalCount && ' shown'}
         </p>
         {activeFilterCount > 0 && (
           <button
             onClick={onClearFilters}
-            className='inline-flex items-center gap-1.5 rounded-md border border-slate-200 bg-white px-3 py-1.5 text-xs text-slate-600 hover:bg-slate-50 transition-colors'
+            className='inline-flex items-center gap-1.5 rounded-md border border-red-200 bg-red-50 px-3 py-1.5 text-xs font-medium text-red-600 hover:bg-red-100 transition-colors'
           >
             <X className='h-3 w-3' />
             Clear {activeFilterCount}{' '}

@@ -8,7 +8,7 @@ export function RootLayout() {
     <div className='flex min-h-screen flex-col bg-slate-50 text-foreground'>
       {/* Top nav */}
       <header className='sticky top-0 z-30 border-b border-slate-200 bg-white shadow-sm'>
-        <div className='mx-auto flex h-14 max-w-7xl items-center justify-between px-4 sm:px-6'>
+        <div className='mx-auto flex h-14 max-w-screen-2xl items-center justify-between px-4 sm:px-6'>
           {/* Brand */}
           <NavLink
             to={ROUTES.FORMS}

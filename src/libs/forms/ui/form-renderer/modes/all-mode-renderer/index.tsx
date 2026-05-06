@@ -23,17 +23,24 @@ export function AllModeRenderer({
       <div className='space-y-8'>
         {form.pages.map((page, pageIdx) => (
           <div key={page.id}>
-            {/* Show page title only when there are multiple pages */}
-            {form.pages.length > 1 && (
-              <div className='mb-4'>
-                <h2 className='text-lg font-semibold text-slate-800'>
-                  {page.title}
-                </h2>
-                {page.description && (
-                  <p className='mt-1 text-sm text-slate-500'>
-                    {page.description}
-                  </p>
-                )}
+            {/* Show page header only when there are multiple pages and the page has a title or description */}
+            {form.pages.length > 1 && (page.title || page.description) && (
+              <div className='mb-4 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm'>
+                <div className='h-1.5 bg-[#0B1AA0]' />
+                <div className='px-5 py-4'>
+                  {page.title && (
+                    <h2 className='text-lg font-semibold text-slate-800'>
+                      {page.title}
+                    </h2>
+                  )}
+                  {page.description && (
+                    <p
+                      className={`text-sm text-slate-500${page.title ? ' mt-1' : ''}`}
+                    >
+                      {page.description}
+                    </p>
+                  )}
+                </div>
               </div>
             )}
 
